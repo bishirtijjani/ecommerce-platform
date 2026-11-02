@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ---- Light palette (default) ----
+     Grey canvas + white surfaces + clearly-visible borders so cards, inputs
+     and dividers have real hierarchy instead of blending into the page. */
+  --bg-canvas: 237 240 244;
+  --bg-surface: 255 255 255;
+  --bg-muted: 242 244 247;
+  --bg-strong: 227 231 236;
+  --bg-elevated: 9 9 11;
+
+  --text-primary: 9 9 11;
+  --text-muted: 107 114 128;
+  --text-placeholder: 156 163 175;
+  --text-on-brand: 255 255 255;
+  --text-on-elevated: 255 255 255;
+
+  --border-default: 213 218 224;
+  --border-strong: 192 198 207;
+  --border-subtle: 232 236 240;
+
+  --brand-default: 11 61 36;
+  --brand-strong: 8 42 25;
+  --brand-soft: 234 243 236;
+  --brand-soft-border: 191 224 201;
+
+  --status-error: 239 68 68;
+  --status-error-strong: 220 38 38;
+  --status-error-soft: 254 226 226;
+
+  --status-success: 16 185 129;
+  --status-success-strong: 5 150 105;
+  --status-success-soft: 209 250 229;
+
+  --status-warning: 217 119 6;
+  --status-warning-strong: 180 83 9;
+  --status-warning-soft: 254 243 199;
+
+  --status-info: 37 99 235;
+  --status-info-strong: 29 78 216;
+  --status-info-soft: 239 246 255;
+
+  --scrim: rgba(0, 0, 0, 0.45);
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg-canvas: 11 11 15;
+  --bg-surface: 22 22 28;
+  --bg-muted: 31 31 39;
+  --bg-strong: 42 42 51;
+  --bg-elevated: 39 39 46;
+
+  --text-primary: 244 244 245;
+  --text-muted: 161 161 170;
+  --text-placeholder: 82 82 91;
+  --text-on-brand: 11 11 15;
+  --text-on-elevated: 244 244 245;
+
+  --border-default: 39 39 42;
+  --border-strong: 63 63 70;
+  --border-subtle: 31 31 39;
+
+  --brand-default: 52 199 123;
+  --brand-strong: 95 219 156;
+  --brand-soft: 17 37 30;
+  --brand-soft-border: 26 79 54;
+
+  --status-error: 248 113 113;
+  --status-error-strong: 252 165 165;
+  --status-error-soft: 47 20 23;
+
+  --status-success: 52 211 153;
+  --status-success-strong: 110 231 183;
+  --status-success-soft: 12 39 33;
+
+  --status-warning: 251 191 36;
+  --status-warning-strong: 252 211 77;
+  --status-warning-soft: 48 30 13;
+
+  --status-info: 96 165 250;
+  --status-info-strong: 147 197 253;
+  --status-info-soft: 16 27 55;
+
+  --scrim: rgba(0, 0, 0, 0.62);
+
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgb(var(--border-default));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-bg-canvas text-text-primary antialiased;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Theme-aware thin scrollbars for dense dashboards. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--border-strong)) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--border-strong));
+  border-radius: 8px;
+}
+
+.leaflet-container {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Reduce motion for users who prefer it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

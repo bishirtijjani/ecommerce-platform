@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body { display: flex; align-items: center; justify-content: center; }
+    body.bg-green { background: #0B3D24; }
+    body.bg-white { background: #FFFFFF; }
+    body.bg-transparent { background: transparent; }
+
+    #mark { width: 512px; height: auto; }
+    /* Recolor the (forest-green) mark to pure white while keeping its alpha. */
+    #mark.is-white { filter: brightness(0) invert(1); }
+    #mark.is-green { filter: none; }
+  </style>
+</head>
+<body>
+  <img id="mark" src="../../../brand/logo.png" alt="MySooq">
+  <script>
+    (function () {
+      var p = new URLSearchParams(location.search);
+      var bg = p.get('bg') || 'green';
+      var color = p.get('color') || 'white';
+      var ratio = parseFloat(p.get('ratio') || '0.62');
+
+      document.body.className = 'bg-' + bg;
+      var mark = document.getElementById('mark');
+      mark.className = 'is-' + color;
+
+      function fit() {
+        var W = document.documentElement.clientWidth;
+        mark.style.width = (ratio * W) + 'px';
+        window.__ready = true;
+      }
+      mark.addEventListener('load', function () {
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+        else fit();
+      });
+      if (mark.complete) {
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+        else fit();
+      }
+    })();
+  </script>
+</body>
+</html>

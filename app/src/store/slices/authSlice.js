@@ -1,0 +1,300 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { Platform } from "react-native";
+import * as SecureStore from "../../lib/storage";
+import api from "../../services/api";
+import { ensurePushPermission } from "../../services/pushPermission";
+
+// Last known profile. A cold start on a bad connection can't fetch /auth/profile,
+// but the stored tokens are still valid - restore this instead of signing out.
+// Kept in SecureStore (keychain/keystore on native) like the tokens themselves.
+const LAST_USER_KEY = "authLastUser";
+
+const cacheUser = (user) => {
+  if (!user) return;
+  SecureStore.setItemAsync(LAST_USER_KEY, JSON.stringify(user)).catch(() => {});
+};
+
+// Async Thunks
+
+/**
+ * Check SecureStore for existing tokens on app startup.
+ * If a valid access token exists, fetch the user profile to restore the session.
+ */
+export const hydrateAuth = createAsyncThunk(
+  "auth/hydrate",
+  async () => {
+    const accessToken = await SecureStore.getItemAsync("accessToken");
+    if (!accessToken) return null;
+
+    try {
+      const response = await api.get("/auth/profile");
+      const user = response.data;
+      cacheUser(user);
+      return { user };
+    } catch (error) {
+      // The API interceptor owns session invalidation: when the refresh token is
+      // genuinely dead it deletes the tokens and rejects with `sessionExpired`.
+      // Only then do we sign the user out. Any other failure (offline, timeout,
+      // 429, 5xx) must keep the saved session - deleting tokens here is what
+      // made a brief network problem look like a logout.
+      if (error?.sessionExpired || error?.status === 401) {
+        await SecureStore.deleteItemAsync("accessToken");
+        await SecureStore.deleteItemAsync("refreshToken");
+        return null;
+      }
+
+      try {
+        const cached = await SecureStore.getItemAsync(LAST_USER_KEY);
+        if (cached) return { user: JSON.parse(cached) };
+      } catch (_) {}
+      return null;
+    }
+  },
+);
+
+export const login = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/login", credentials);
+      const { user, tokens } = response.data;
+      await SecureStore.setItemAsync("accessToken", tokens.accessToken);
+      await SecureStore.setItemAsync("refreshToken", tokens.refreshToken);
+      // Register push token non-blocking
+      ensurePushPermission("auto");
+      return { user, tokens };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const register = createAsyncThunk(
+  "auth/register",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/register", userData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const verifyOtp = createAsyncThunk(
+  "auth/verifyOtp",
+  async (verificationData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/otp/verify", verificationData);
+      const data = response.data;
+      // Customer registrations now come back with tokens + user - persist them
+      // so the navigator's auth gate flips on `isAuthenticated` and the user
+      // lands in the main app without a separate login step. Password-reset
+      // OTPs (handled on a different screen) carry no tokens, so this is a
+      // no-op for them.
+      if (data?.tokens?.accessToken && data?.tokens?.refreshToken && data?.user) {
+        await SecureStore.setItemAsync("accessToken", data.tokens.accessToken);
+        await SecureStore.setItemAsync("refreshToken", data.tokens.refreshToken);
+        ensurePushPermission("auto");
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      // Drop the browser push subscription so a shared/logged-out device stops
+      // receiving this user's notifications. Fire-and-forget: the local
+      // unsubscribe must not hold logout open on a slow/offline network. Any
+      // server row left behind is pruned on its next 410 response.
+      if (Platform.OS === "web") {
+        import("../../services/webPush")
+          .then(({ unregisterWebPush }) => unregisterWebPush())
+          .catch(() => {});
+      }
+
+      const refreshToken = await SecureStore.getItemAsync("refreshToken");
+      if (refreshToken) {
+        await api.post("/auth/logout", { refreshToken });
+      }
+    } catch (error) {
+      console.warn("Logout API failed, continuing local logout", error);
+    } finally {
+      await SecureStore.deleteItemAsync("accessToken");
+      await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync(LAST_USER_KEY).catch(() => {});
+    }
+  },
+);
+
+export const requestPasswordReset = createAsyncThunk(
+  "auth/requestPasswordReset",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/password/forgot", { email });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ email, code, newPassword }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/password/reset", {
+        email,
+        code,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  isHydrating: true,
+  error: null,
+  pendingEmail: null,
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    setPendingEmail: (state, action) => {
+      state.pendingEmail = action.payload;
+    },
+    // Phase 5 - fired by the api.js interceptor when the silent token
+    // refresh fails (refresh-token expired or revoked). Clears the user
+    // out of state so the navigator falls back to the Login stack.
+    forceLogout: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.isHydrating = false;
+    },
+  },
+  extraReducers: (builder) => {
+    // Hydrate auth from stored tokens
+    builder.addCase(hydrateAuth.fulfilled, (state, action) => {
+      state.isHydrating = false;
+      if (action.payload) {
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        // Refresh the FCM/Expo push token on warm start - Expo can rotate
+        // tokens between sessions, and missing a refresh silently breaks pushes.
+        ensurePushPermission("auto");
+      }
+    });
+    builder.addCase(hydrateAuth.rejected, (state) => {
+      state.isHydrating = false;
+    });
+
+    // Login
+    builder.addCase(login.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      cacheUser(action.payload.user);
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    // Register
+    builder.addCase(register.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(register.fulfilled, (state, action) => {
+      state.isLoading = false;
+      // We will set pending email so OTP screen knows the email
+      state.pendingEmail = action.meta.arg.email;
+    });
+    builder.addCase(register.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    // Verify OTP
+    builder.addCase(verifyOtp.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(verifyOtp.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.pendingEmail = null;
+      // When tokens are present (customer registration path) flip the auth
+      // gate here so AppNavigator swaps to the authed stack automatically.
+      if (action.payload?.user && action.payload?.tokens) {
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        cacheUser(action.payload.user);
+      }
+    });
+    builder.addCase(verifyOtp.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    // Logout
+    builder.addCase(logout.fulfilled, (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      // The root reducer wipes user-scoped state on logout, which resets this
+      // slice to its initial state (isHydrating: true). Without clearing the
+      // flag here the full-screen hydration spinner never goes away.
+      state.isHydrating = false;
+      state.isLoading = false;
+      state.error = null;
+    });
+
+    // Request password reset
+    builder.addCase(requestPasswordReset.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(requestPasswordReset.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(requestPasswordReset.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    // Reset password
+    builder.addCase(resetPassword.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(resetPassword.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(resetPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+  },
+});
+
+export const { clearError, setPendingEmail, forceLogout } = authSlice.actions;
+export default authSlice.reducer;

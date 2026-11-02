@@ -1,0 +1,29 @@
+# Ecommerce
+
+## .gitignore
+
+# `node_modules/` only matches real directories - a symlinked node_modules
+# (a common trick to avoid a second install) would otherwise be committable.
+node_modules
+node_modules/
+.codegraph/
+.env
+*.log
+logs/
+dist/
+dist-web/
+.expo/
+ios/
+android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+mysooq-service-account.json
+*.service-account.json
+*.orig.*
+web-build/
+.DS_Store
+Thumbs.db
+.aider*

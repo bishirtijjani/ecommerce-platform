@@ -1,0 +1,60 @@
+/* MySooq brand tokens + fonts for the store-asset generator.
+ * Values mirror app/src/theme/tokens.js (light) and brand/tokens.json so the
+ * generated icons/mockups stay on-brand with the shipping customer app. */
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Roboto_400Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 500;
+  font-style: normal;
+  src: url('fonts/Roboto_500Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-style: normal;
+  src: url('fonts/Roboto_700Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 900;
+  font-style: normal;
+  src: url('fonts/Roboto_900Black.ttf') format('truetype');
+}
+
+:root {
+  /* forest green (brand accent) */
+  --brand: #0B3D24;
+  --brand-strong: #082A19;
+  --brand-soft: #EAF3EC;
+  --brand-soft-border: #BFE0C9;
+
+  /* neutrals */
+  --canvas: #FFFFFF;
+  --offwhite: #FAFAFA;
+  --surface-muted: #F2F4F7;
+  --border: #D5DAE0;
+  --muted: #6B7280;
+  --ink: #201A16;
+
+  /* status */
+  --success: #3D7A52;
+  --error: #B3432B;
+  --warning: #D97706;
+  --info: #2563EB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body {
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #000;
+}
+img, svg { display: block; }

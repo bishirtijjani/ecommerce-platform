@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MySooq - asset studio</title>
+  <link rel="stylesheet" href="brand.css">
+  <style>
+    body { background: #0b0b0f; color: #f4f4f5; padding: 40px; }
+    h1 { font-weight: 900; font-size: 28px; margin-bottom: 6px; }
+    p.lead { color: #a1a1aa; margin-bottom: 28px; }
+    h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #a1a1aa; margin: 28px 0 12px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+    .tile { background: #16161c; border: 1px solid #27272a; border-radius: 16px; padding: 14px; }
+    .tile .cap { color: #a1a1aa; font-size: 12px; margin-bottom: 10px; }
+    iframe { border: none; border-radius: 10px; background: #111; display: block; }
+    .lg { width: 512px; height: 250px; }
+    .md { width: 220px; height: 220px; }
+    .sm { width: 140px; height: 140px; }
+    .ph { width: 240px; height: 520px; }
+    .on-green { background: #0B3D24; }
+    .on-checker { background: repeating-conic-gradient(#2a2a30 0% 25%, #1b1b20 0% 50%) 50% / 24px 24px; }
+  </style>
+</head>
+<body>
+  <h1>MySooq - asset studio</h1>
+  <p class="lead">Live previews of the HTML/CSS templates. Run <code>node store-assets/generator/render.mjs</code> to rasterize to PNG.</p>
+
+  <h2>Brand + store graphics</h2>
+  <div class="grid">
+    <div class="tile"><div class="cap">Feature graphic 1024x500</div><iframe class="lg" src="templates/feature-graphic.html"></iframe></div>
+    <div class="tile"><div class="cap">App icon 1024 (white bg)</div><iframe class="md" src="templates/icon.html?bg=white&amp;color=green&amp;ratio=0.72"></iframe></div>
+    <div class="tile"><div class="cap">Adaptive icon 1024 (foreground)</div><iframe class="md on-checker" src="templates/icon.html?bg=transparent&amp;color=white&amp;ratio=0.66"></iframe></div>
+    <div class="tile"><div class="cap">Adaptive icon (composited)</div><iframe class="md" src="templates/icon.html?bg=green&amp;color=white&amp;ratio=0.66"></iframe></div>
+    <div class="tile"><div class="cap">Splash mark 1024</div><iframe class="md" src="templates/icon.html?bg=transparent&amp;color=white&amp;ratio=0.56"></iframe></div>
+    <div class="tile"><div class="cap">Favicon 256</div><iframe class="sm" src="templates/icon.html?bg=white&amp;color=green&amp;ratio=0.72"></iframe></div>
+  </div>
+
+  <h2>Store screenshots (7 frames x 5 device classes)</h2>
+  <div class="grid">
+    <div class="tile"><div class="cap">01 Home</div><iframe class="ph" src="templates/screens/01-home.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">02 Discover</div><iframe class="ph" src="templates/screens/02-discover.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">03 Product</div><iframe class="ph" src="templates/screens/03-product.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">04 Chat</div><iframe class="ph" src="templates/screens/04-chat.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">05 Request</div><iframe class="ph" src="templates/screens/05-request.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">06 Storefront</div><iframe class="ph" src="templates/screens/06-storefront.html?device=ios"></iframe></div>
+    <div class="tile"><div class="cap">07 Sell</div><iframe class="ph" src="templates/screens/07-sell.html?device=ios"></iframe></div>
+  </div>
+</body>
+</html>

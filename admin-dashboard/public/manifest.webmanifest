@@ -1,0 +1,14 @@
+{
+  "name": "MySooq Admin",
+  "short_name": "Sooq Admin",
+  "description": "Operate the MySooq marketplace.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B3D24",
+  "icons": [
+    { "src": "/logo.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

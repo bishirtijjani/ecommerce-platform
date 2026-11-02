@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MySooq mark">
+  <!-- Construction per DESIGN.md #2: a wide clay base (market-stall plinth) with two
+       raised indigo/clay diamonds above it, separated by a thin doorway gap. Reads as
+       both a market-stall threshold and an abstract "M". -->
+  <polygon points="10,88 90,88 72,52 28,52" fill="#2B1B12"/>
+  <polygon points="32,17 46,35 32,53 18,35" fill="#2A3A73"/>
+  <polygon points="68,17 82,35 68,53 54,35" fill="#2B1B12"/>
+</svg>

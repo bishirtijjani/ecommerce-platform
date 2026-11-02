@@ -1,0 +1,9 @@
+<svg viewBox="0 0 340 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MySooq">
+  <!-- Mark, same geometry as logo-mark.svg, scaled into the left 100x100 area -->
+  <polygon points="10,88 90,88 72,52 28,52" fill="#2B1B12"/>
+  <polygon points="32,17 46,35 32,53 18,35" fill="#2A3A73"/>
+  <polygon points="68,17 82,35 68,53 54,35" fill="#2B1B12"/>
+  <!-- Wordmark. Fallback font shown — swap for the actual display face (DESIGN.md #4,
+       e.g. Archivo Expanded/Black) once integrated into the app's font pipeline. -->
+  <text x="112" y="62" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="42" fill="#201A16">MySooq</text>
+</svg>

@@ -1,0 +1,51 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "development"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "staging"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "production"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./mysooq-service-account.json",
+        "track": "alpha",
+        "releaseStatus": "draft"
+      },
+      "ios": {
+        "appleTeamId": "SRSAYBG6V5"
+      }
+    }
+  }
+}

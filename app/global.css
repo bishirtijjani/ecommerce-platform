@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * react-native-web renders <TextInput> as a native <input>/<textarea>, so on
+ * focus the browser paints its default outline - which reads as a thick,
+ * out-of-place black inner border inside the app's rounded search fields.
+ * Remove the UA focus ring app-wide; focus is still conveyed by each field's
+ * own styling. Use :focus-visible-safe reset (keyboard users keep nothing here
+ * by design - the fields are visually obvious in the mobile-first layout).
+ */
+input:focus,
+textarea:focus,
+select:focus,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none !important;
+  outline-width: 0 !important;
+}

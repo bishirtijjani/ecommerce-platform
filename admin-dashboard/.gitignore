@@ -1,0 +1,16 @@
+# Logs
+dist
+dist-ssr
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Dependencies
+node_modules
+
+# Env
+.env.local
+.env.*.local

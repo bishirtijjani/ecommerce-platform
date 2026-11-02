@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    html, body { width: 1024px; height: 500px; margin: 0; overflow: hidden; }
+    body {
+      position: relative;
+      background:
+        radial-gradient(120% 150% at 12% 18%, rgba(52,199,123,0.20) 0%, rgba(52,199,123,0) 46%),
+        linear-gradient(118deg, #0B3D24 0%, #082A19 58%, #061E12 100%);
+      display: flex; align-items: center; gap: 52px;
+      padding: 0 72px; color: #fff;
+    }
+    .tile {
+      width: 208px; height: 208px; flex: none;
+      border-radius: 44px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 2px 30px rgba(0, 0, 0, 0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tile #mk { width: 128px; height: auto; filter: brightness(0) invert(1); }
+    .tx .eyebrow {
+      font-family: 'Roboto', sans-serif; font-weight: 700;
+      font-size: 22px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: #8FD9AC; margin-bottom: 18px;
+    }
+    .tx .title {
+      font-family: 'Roboto', sans-serif; font-weight: 900;
+      font-size: 82px; letter-spacing: -2.5px; line-height: 0.98;
+    }
+    .tx .tag {
+      font-family: 'Roboto', sans-serif; font-weight: 500;
+      font-size: 31px; line-height: 1.25; color: rgba(255, 255, 255, 0.92);
+      margin-top: 22px; max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div class="tile"><img id="mk" src="../../../brand/logo.png" alt=""></div>
+  <div class="tx">
+    <div class="eyebrow">Marketplace</div>
+    <div class="title">MySooq</div>
+    <div class="tag">Buy and sell from trusted local vendors.</div>
+  </div>
+  <script>
+    (function () {
+      function ready() { window.__ready = true; }
+      var mk = document.getElementById('mk');
+      function go() { if (document.fonts && document.fonts.ready) document.fonts.ready.then(ready); else ready(); }
+      if (mk.complete) go(); else mk.addEventListener('load', go);
+    })();
+  </script>
+</body>
+</html>

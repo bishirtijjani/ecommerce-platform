@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "150505829332",
+    "project_id": "mysooq-54d5e",
+    "storage_bucket": "mysooq-54d5e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150505829332:android:9f0473531d5813357d9c41",
+        "android_client_info": {
+          "package_name": "com.mysooq.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3JHVZ7nUGNpC25LNfg6_F1UUBLteLoDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150505829332:android:0c4163709c13e25a7d9c41",
+        "android_client_info": {
+          "package_name": "ng.mysooq.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3JHVZ7nUGNpC25LNfg6_F1UUBLteLoDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

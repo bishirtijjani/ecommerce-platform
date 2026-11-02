@@ -1,0 +1,44 @@
+import { create } from 'zustand';
+
+type Mode = 'light' | 'dark' | 'system';
+const KEY = 'mysooq_admin_theme';
+
+const isBrowser = typeof window !== 'undefined';
+
+const systemPrefersDark = () =>
+  isBrowser && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const resolve = (mode: Mode) => (mode === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : mode);
+
+const applyDom = (resolved: 'light' | 'dark') => {
+  if (isBrowser) {
+    document.documentElement.classList.toggle('dark', resolved === 'dark');
+  }
+};
+
+interface ThemeState {
+  mode: Mode;
+  resolved: 'light' | 'dark';
+  setMode: (mode: Mode) => void;
+}
+
+const initialMode: Mode = (isBrowser && (localStorage.getItem(KEY) as Mode)) || 'light';
+applyDom(resolve(initialMode));
+
+export const useThemeStore = create<ThemeState>((set) => ({
+  mode: initialMode,
+  resolved: resolve(initialMode),
+  setMode: (mode) => {
+    if (isBrowser) localStorage.setItem(KEY, mode);
+    const resolved = resolve(mode);
+    applyDom(resolved);
+    set({ mode, resolved });
+  },
+}));
+
+if (isBrowser) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const { mode, setMode } = useThemeStore.getState();
+    if (mode === 'system') setMode('system');
+  });
+}

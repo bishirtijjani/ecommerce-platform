@@ -1,0 +1,14 @@
+{
+  "name": "MySooq Vendor",
+  "short_name": "Sooq Vendor",
+  "description": "Manage orders, catalogue and your storefront on MySooq.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B3D24",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

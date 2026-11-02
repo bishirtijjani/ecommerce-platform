@@ -1,0 +1,1451 @@
+// ============================================================
+// ECOMMERCE MARKETPLACE - PRISMA SCHEMA
+// Single Source of Truth for all data models
+//
+// Forked from the vtu-logistics ("MYSOOQ") schema. That app bundled a
+// multi-vendor marketplace (Vendor/Product/ProductVariant/OptionGroup) on
+// top of a delivery backbone (Request/Rider/PackageDetail/VTU). This schema
+// keeps the marketplace half, drops the delivery/rider/VTU half, and
+// rewrites the logistics Request -> Order for a self-fulfilled (vendor ships
+// directly) ecommerce flow. "Merchant" was renamed to "Vendor" throughout.
+//
+// NOTE: a NEW Request model (reverse marketplace: "I need X, sellers
+// respond") was added later at the bottom of this file. It is unrelated to
+// the old logistics Request that became Order.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  VENDOR
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum KycStatus {
+  NONE
+  PENDING
+  VERIFIED
+  FAILED
+}
+
+// ============================================================
+// ORDER ENUMS
+// ============================================================
+
+enum OrderStatus {
+  PENDING // Order placed, awaiting vendor confirmation
+  PROCESSING // Vendor accepted / preparing the order
+  SHIPPED // Vendor has dispatched the order
+  DELIVERED // Customer received the order
+  CANCELLED // Cancelled by any party before shipping
+}
+
+/// How an Order came to exist: the customer placed it at checkout, or the
+/// vendor logged it manually (chat-commerce) on the customer's behalf.
+enum OrderSource {
+  CUSTOMER
+  VENDOR
+}
+
+enum VendorStatus {
+  PENDING_APPROVAL
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+// ============================================================
+// PRODUCT VARIANT & OPTION-GROUP ENUMS
+// ============================================================
+
+enum PackUnit {
+  ML
+  L
+  G
+  KG
+  TABLET
+  CAPSULE
+  PIECE
+  PAIR
+  PACK
+  BOTTLE
+  SACHET
+  CARTON
+}
+
+enum SelectionRule {
+  REQUIRED_ONE
+  OPTIONAL_ONE
+  REQUIRED_MULTIPLE
+  OPTIONAL_MULTIPLE
+}
+
+/// Product condition - whether a listing is brand-new, a normally-sold
+/// pre-owned item, or a Second Hand split. SECOND_HAND listings are only shown
+/// in the Second Hand marketplace (and a dedicated section of the seller's
+/// shop) and are located by the seller's State/LGA, never in normal category
+/// browsing. Defaults to NEW so every pre-existing listing keeps its meaning.
+enum ProductCondition {
+  NEW
+  USED
+  SECOND_HAND
+}
+
+/// Substitution preference per line item (e.g. grocery order where an exact
+/// item is out of stock).
+/// NONE        → customer wants the exact item or nothing at all.
+/// VENDOR_PICK → vendor may swap with a comparable item without asking.
+/// CONTACT_ME  → vendor must reach out before swapping.
+enum SubstitutionPreference {
+  NONE
+  VENDOR_PICK
+  CONTACT_ME
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+/// Core user identity - shared by customers, vendors, and admins.
+/// Role determines which parts of the system the user can access.
+model User {
+  id                      String     @id @default(uuid())
+  email                   String     @unique
+  emailCanonical          String? /// Normalized email (gmail dots/+tags/googlemail collapsed) for multi-account detection. Non-unique on purpose: we FLAG duplicates for review, never block. See utils/email-canonical.js.
+  reviewFlag              Boolean    @default(false) /// Flagged for manual fraud review (multi-account / funding-ring). Advisory only - does NOT restrict the account.
+  reviewReason            String? /// Human-readable why-flagged note (appended).
+  reviewFlaggedAt         DateTime?
+  phone                   String?    @unique
+  firstName               String
+  lastName                String
+  passwordHash            String? /// Hashed password for email/password login
+  profilePicture          String? /// URL to profile picture (cloud storage)
+  dateOfBirth             DateTime? /// For KYC identity confirmation
+  address                 String? /// Primary address text
+  /// Nigerian State + LGA captured at registration (both customers and sellers).
+  /// A seller's Vendor/Product second-hand location is derived from these.
+  state                   String?
+  lga                     String?
+  kycStatus               KycStatus  @default(NONE)
+  role                    UserRole   @default(CUSTOMER)
+  permissions             Json? /// Array of permission strings for ADMIN role. null/['ALL'] = super admin.
+  status                  UserStatus @default(PENDING)
+  fcmToken                String? /// Firebase Cloud Messaging token for push notifications
+  deletedAt               DateTime? /// Soft delete
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vendor                  Vendor? // If user is a vendor
+  orders                  Order[]                  @relation("CustomerOrders")
+  ratingsGiven            Rating[]                 @relation("RatingsGiven")
+  sessions                Session[]
+  notificationPreferences NotificationPreferences?
+  orderMessages           OrderMessage[]
+  notifications           Notification[]
+  savedAddresses          SavedAddress[]
+  tickets                 SupportTicket[]          @relation("UserTickets")
+  assignedTickets         SupportTicket[]          @relation("AssignedTickets")
+  raisedDisputes          Dispute[]                @relation("RaisedDisputes")
+  resolvedDisputes        Dispute[]                @relation("ResolvedDisputes")
+  supportMessages         SupportMessage[]
+  pushSubscriptions       PushSubscription[]
+  conversations           Conversation[]           @relation("CustomerConversations")
+  chatMessages            ChatMessage[]             @relation("ChatMessagesSent")
+  requests                Request[]                @relation("CustomerRequests")
+
+  @@index([phone])
+  @@index([email])
+  @@index([emailCanonical])
+  @@index([reviewFlag])
+  @@index([role, status])
+  @@map("users")
+}
+
+/// Post-delivery rating from customer to vendor.
+model Rating {
+  id String @id @default(uuid())
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  customerId String
+
+  vendorScore   Int? // 1-5 stars for the vendor
+  vendorComment String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  customer User @relation("RatingsGiven", fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([orderId])
+  @@map("ratings")
+}
+
+// ============================================================
+// MARKETPLACE - VENDORS & PRODUCTS
+// ============================================================
+
+/// Vendor - a marketplace seller (shop/store).
+/// A shop has no locked-in single category: its categories are DERIVED from
+/// the categories of its available products (a shop can sell across many
+/// categories). See getVendors/getVendorById for the derivation query.
+model Vendor {
+  id String @id @default(uuid())
+
+  // User account (optional - standalone vendors possible)
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  status   VendorStatus @default(PENDING_APPROVAL)
+
+  // Business info
+  name        String
+  description String?
+  phone       String
+  email       String?
+
+  // Location
+  address String
+  lat     Float
+  lng     Float
+  /// Nigerian State + LGA for this shop (copied from the owner's account at
+  /// enroll, editable on the shop profile). Source of truth for the location
+  /// stamped onto the shop's SECOND_HAND products.
+  state   String?
+  lga     String?
+  /// How far this seller will travel to fulfil a Request (km). Null = no
+  /// explicit limit; the Request's own radius applies. Only meaningful for
+  /// service sellers (mechanics/tailors) - product shops ignore it.
+  serviceRadiusKm Int?
+
+  // Operating hours
+  openingTime String   @default("08:00")
+  closingTime String   @default("22:00")
+  openingDays String[] @default(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+
+  // Media
+  logoUrl       String?
+  coverImageUrl String?
+  /// Extra shop gallery photos shown on the storefront's About tab.
+  photos        String[] @default([])
+
+  /// Shop policy copy (shipping/returns/payment/terms), shown on the
+  /// storefront's About + Policies tabs. Shape: { shipping, returns,
+  /// payment, shopPolicies } - all plain strings, vendor-authored.
+  policies Json?
+
+  // Settings
+  isActive Boolean @default(true)
+  isOpen   Boolean @default(false)
+
+  // Admin-controlled visibility override (independent of vendor's isOpen flag)
+  adminActiveOverride Boolean @default(true)
+
+  // Status tracking
+  suspensionReason String?
+  rejectionReason  String?
+
+  // Phone OTP verification
+  phoneVerified Boolean @default(false)
+
+  // Performance
+  averageRating Float @default(0)
+  totalOrders   Int   @default(0)
+
+  /// The shop's top-level industry (a VendorCategory) — set explicitly by the
+  /// owner/admin. Source of truth for grouping shops on the marketplace/home;
+  /// never inferred from products alone, so a shop with no products still
+  /// appears under its own industry instead of "Other".
+  categoryId String?
+  vendorCategory VendorCategory? @relation("VendorIndustryCategory", fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Full-text search vector, generated and maintained by Postgres from
+  /// name (weight A) + description (weight B). Added via raw SQL in a
+  /// follow-up migration; declared Unsupported so Prisma leaves it alone
+  /// on diff. Never written from application code.
+  search_vector Unsupported("tsvector")?
+
+  // Relations
+  orders        Order[]
+  products      Product[]
+  tags          VendorTag[]
+  discountCodes DiscountCode[]
+  conversations Conversation[]
+  highlights    Highlight[]
+  /// Taxonomy rows this vendor created (private to them): categories they
+  /// added and subcategories they added under any category.
+  categories    VendorCategory[] @relation("VendorOwnedCategories")
+  subcategories Subcategory[]    @relation("VendorOwnedSubcategories")
+  callbackRequests CallbackRequest[]
+  campaigns        PlatformCampaign[]
+  requestResponses RequestResponse[]
+  requestPings     RequestPing[]
+
+  @@index([status])
+  @@index([isActive, isOpen])
+  @@index([lat, lng])
+  @@index([state, lga])
+  @@index([categoryId])
+  @@index([search_vector], type: Gin)
+  @@map("vendors")
+}
+
+/// Shop story highlights (Instagram-style permanent collections of images the
+/// vendor posts to their storefront). NOT time-boxed like WhatsApp status -
+/// stories stay live until the vendor removes them. A highlight is a named
+/// collection covering a theme (e.g. "New arrivals", "Behind the scenes");
+/// each highlight owns an ordered set of HighlightStory rows.
+model Highlight {
+  id        String @id @default(uuid())
+  vendorId  String
+  vendor    Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name      String
+  /// Cover image for the highlight tile on the storefront. Falls back to the
+  /// first story's image when left null (no synthetic placeholder).
+  coverImageUrl String?
+  sortOrder Int @default(0)
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stories HighlightStory[]
+
+  @@index([vendorId])
+  @@index([vendorId, isActive, sortOrder])
+  @@map("highlights")
+}
+
+/// One story (image or video + optional caption) within a highlight collection.
+/// A story can link up to two of the vendor's own products (see
+/// HighlightStoryProduct) so customers can jump straight to the item.
+model HighlightStory {
+  id          String   @id @default(uuid())
+  highlightId String
+  highlight   Highlight @relation(fields: [highlightId], references: [id], onDelete: Cascade)
+  mediaUrl    String
+  mediaType   String   @default("image")
+  caption     String?
+  sortOrder   Int @default(0)
+  createdAt   DateTime @default(now())
+
+  products HighlightStoryProduct[]
+
+  @@index([highlightId])
+  @@index([highlightId, sortOrder])
+  @@map("highlight_stories")
+}
+
+/// Join table: highlight story ↔ product (up to 2 per story, vendor's own
+/// products only - enforced in the validator/service). sortOrder keeps the
+/// cards in the order the vendor picked them.
+model HighlightStoryProduct {
+  id        String         @id @default(uuid())
+  storyId   String
+  story     HighlightStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+
+  @@unique([storyId, productId])
+  @@index([storyId, sortOrder])
+  @@map("highlight_story_products")
+}
+
+/// A category - either admin-managed/global (vendorId null) or created by a
+/// specific vendor (vendorId set -> private to that vendor, but otherwise
+/// treated identically to a global category: same search, same importance).
+/// One category per vendor (Vendor.categoryId) for the shop's top-level
+/// industry; products also file under a category + subcategory from this
+/// unified taxonomy.
+model VendorCategory {
+  id             String  @id @default(uuid())
+  name           String
+  slug           String?
+  description    String?
+  icon           String?
+  color          String?
+  /// Category picture (e.g. the grid tile on shop pages / marketplace browse).
+  imageUrl     String?
+  sortOrder      Int     @default(0)
+  hasPreparation Boolean @default(true)
+  isActive       Boolean @default(true)
+
+  /// Admin-managed schema hint for which axes and pack units a category uses.
+  /// Shape: { axes: string[], pack: boolean, packUnits?: PackUnit[], sizeSystem?: string, ... }
+  /// Pure UX hint; DB does not enforce. Consumed by vendor + customer apps.
+  attributeSchema Json?
+
+  /// Owning vendor for vendor-created (private) categories; null = global.
+  vendorId String?
+  owner    Vendor? @relation("VendorOwnedCategories", fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products      Product[]
+  subcategories Subcategory[]
+  vendors       Vendor[] @relation("VendorIndustryCategory")
+  requests      Request[]
+
+  @@unique([vendorId, name])
+  @@index([isActive, sortOrder])
+  @@index([vendorId])
+  @@map("vendor_categories")
+}
+
+/// A subcategory within a Category. Either admin-managed/global (vendorId
+/// null) or created by a specific vendor (vendorId set -> private to that
+/// vendor). A vendor can add their own subcategory under any category (their
+/// own or a global one). Products pick one category + one subcategory from
+/// this unified list at creation time.
+model Subcategory {
+  id         String         @id @default(uuid())
+  categoryId String
+  category   VendorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name       String
+  slug       String?
+  /// Explicit/image shown for this subcategory on category grids.
+  imageUrl   String?
+  sortOrder  Int            @default(0)
+  isActive   Boolean        @default(true)
+
+  /// Owning vendor for vendor-created (private) subcategories; null = global.
+  vendorId String?
+  owner    Vendor? @relation("VendorOwnedSubcategories", fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+  requests Request[]
+
+  @@unique([categoryId, vendorId, name])
+  @@index([categoryId, isActive, sortOrder])
+  @@index([vendorId])
+  @@map("subcategories")
+}
+
+/// Global tag taxonomy - admin-managed, assigned to vendors for search/filtering in customer app.
+model Tag {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  slug     String  @unique /// URL-safe version of name
+  category String? /// Grouping: e.g., "cuisine", "fashion", "health"
+  color    String? /// Hex color for UI display
+  icon     String? /// Icon name or URL
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vendors VendorTag[]
+
+  @@index([category])
+  @@index([isActive])
+  @@map("tags")
+}
+
+/// Join table: vendor ↔ tag (many-to-many)
+model VendorTag {
+  id       String @id @default(uuid())
+  vendorId String
+  tagId    String
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([vendorId, tagId])
+  @@index([vendorId])
+  @@index([tagId])
+  @@map("vendor_tags")
+}
+
+
+/// Product - items a vendor sells.
+/// `basePrice` and `stock` are kept for fallback display when a product has a
+/// single default variant. Multi-SKU products carry pricing/stock on `ProductVariant`.
+model Product {
+  id       String @id @default(uuid())
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Taxonomy: one category (required) + optional subcategory per product,
+  // picked from the unified list (global or vendor-created). Subcategory is
+  // optional so a vendor can catalogue a product under a category that has no
+  // subcategories yet, then add subcategories later.
+  categoryId    String
+  category      VendorCategory @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory?    @relation(fields: [subcategoryId], references: [id])
+
+  basePrice Decimal @db.Decimal(15, 2)
+  stock     Int     @default(0)
+
+  // Media. `images` is the product gallery (up to 5). `imageUrl` is kept as a
+  // cover/back-compat alias equal to images[0] (set by the service so it's
+  // never out of sync). `videoUrl` holds an optional inline product video.
+  imageUrl    String?
+  images      String[] @default([])
+  videoUrl    String?
+  isAvailable Boolean   @default(true)
+
+  /// New vs pre-owned vs Second Hand. Defaults to NEW so existing listings
+  /// migrate untouched.
+  condition ProductCondition @default(NEW)
+
+  /// Listing location - snapshotted from the shop's account (Vendor.state/lga)
+  /// at create/edit time (account -> shop -> product inheritance). Lets browse
+  /// filter by Nigerian State/LGA and the Second Hand marketplace group by
+  /// State then LGA without joining the vendor. Null until the shop sets one.
+  state String?
+  lga   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Full-text search vector, generated and maintained by Postgres from
+  /// name (A) + description (B). Category weight was dropped when `category`
+  /// (a free-text path) was replaced by the categoryId/subcategoryId
+  /// relations - see the migration that rebuilt this column.
+  /// Added via raw SQL in a follow-up migration; declared Unsupported so
+  /// Prisma leaves it alone on diff. Never written from application code.
+  search_vector Unsupported("tsvector")?
+
+  // Relations
+  variants              ProductVariant[]
+  optionGroups          ProductOptionGroup[]
+  orderItems            OrderItem[]
+  highlightStoryProducts HighlightStoryProduct[]
+  callbackRequests      CallbackRequest[]
+
+  @@index([vendorId])
+  @@index([categoryId])
+  @@index([subcategoryId])
+  @@index([condition])
+  @@index([condition, state, lga])
+  @@index([search_vector], type: Gin)
+  @@map("products")
+}
+
+/// ProductVariant - SKU-level variation of a product.
+/// Every Product has at least one variant (default created for single-SKU products).
+/// `attributes` is the discrete-axis JSON; `packSize/packUnit/packLabel` is the unit/pack.
+model ProductVariant {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku        String?
+  /// Discrete selection axes, schema-less so each category names its own.
+  /// e.g. {size:"M", color:"Black"} or {strength:"500mg", form:"TABLET"}
+  attributes Json    @default("{}")
+
+  /// Pack/unit fields - null for variants where category isn't pack-based.
+  packSize  Decimal?  @db.Decimal(15, 4)
+  packUnit  PackUnit?
+  /// Denormalized human-readable pack label, e.g. "500 ml", "30 tablets".
+  packLabel String?
+
+  price       Decimal @db.Decimal(15, 2)
+  stock       Int     @default(0)
+  imageUrl    String?
+  images      String[] @default([])
+  videoUrl    String?
+  isAvailable Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderItems OrderItem[]
+
+  @@unique([productId, sku])
+  @@index([productId])
+  @@index([productId, isAvailable])
+  @@map("product_variants")
+}
+
+/// ProductOptionGroup - customer-facing customization group on a product
+/// (e.g. size, color, addons). Combinable with variants for combos.
+model ProductOptionGroup {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  name          String /// "Size", "Gift wrap", "Engraving"
+  selectionRule SelectionRule
+  minSelect     Int           @default(0)
+  maxSelect     Int           @default(1)
+  sortOrder     Int           @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items ProductOptionItem[]
+
+  @@index([productId, sortOrder])
+  @@map("product_option_groups")
+}
+
+/// ProductOptionItem - a single selectable item inside an option group.
+model ProductOptionItem {
+  id      String             @id @default(uuid())
+  groupId String
+  group   ProductOptionGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  name        String /// "Small", "Gift wrapped", "Engraved"
+  description String? /// Optional flavour-text shown under the item name in the customer cart
+  /// Price delta applied on top of the variant price. Defaults to 0 for price-neutral picks.
+  priceDelta  Decimal @default(0) @db.Decimal(15, 2)
+  imageUrl    String? /// Cloudinary URL - lets vendors show a picture of the add-on
+  isDefault   Boolean @default(false)
+  isAvailable Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupId, sortOrder])
+  @@map("product_option_items")
+}
+
+// ============================================================
+// ORDERS
+// ============================================================
+
+/// Order - THE CENTRAL ENTITY. Every order belongs to exactly one customer
+/// and one vendor. No rider/dispatch concept - vendors self-fulfill and mark
+/// orders shipped/delivered directly.
+model Order {
+  id     String      @id @default(uuid())
+  status OrderStatus @default(PENDING)
+  /// Provenance: customer checkout (CUSTOMER) or vendor-logged on the
+  /// customer's behalf (VENDOR). Lets admins audit the chat-commerce path.
+  source OrderSource @default(CUSTOMER)
+
+  // Customer
+  customerId String
+  customer   User   @relation("CustomerOrders", fields: [customerId], references: [id])
+
+  // Vendor - every order has exactly one vendor
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+
+  // Shipping
+  shippingAddressId String
+  shippingAddress   SavedAddress @relation(fields: [shippingAddressId], references: [id])
+  /// Vendor-entered carrier tracking reference, set when the order is marked SHIPPED.
+  trackingNumber    String?
+
+  // Pricing
+  subtotal Decimal @db.Decimal(15, 2) // Items cost
+  tax      Decimal @default(0) @db.Decimal(15, 2)
+  total    Decimal @db.Decimal(15, 2) // What customer pays
+
+  discountCodeId String?
+  discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  discountAmount Decimal       @default(0) @db.Decimal(15, 2)
+
+  // Cancellation
+  cancelledAt        DateTime?
+  cancelledBy        String? // customer, vendor, system
+  cancellationReason String?
+
+  // Timestamps for lifecycle
+  confirmedAt  DateTime? // Vendor accepted the order
+  processingAt DateTime? // Vendor preparing/packing
+  shippedAt    DateTime?
+  deliveredAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  items    OrderItem[]
+  rating   Rating?
+  messages OrderMessage[]
+  disputes Dispute[]
+
+  @@index([customerId])
+  @@index([vendorId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerId, status, createdAt(sort: Desc)]) /// Covers the active-order banner: status IN (active set) ORDER BY createdAt DESC LIMIT 1
+  @@map("orders")
+}
+
+/// OrderMessage - in-app chat between customer and vendor scoped to an order.
+model OrderMessage {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  fromUserId String
+  fromUser   User   @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+
+  body String @db.VarChar(1000)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId, createdAt])
+  @@index([fromUserId])
+  @@map("order_messages")
+}
+
+/// Conversation - a persistent buyer<->vendor chat thread. This is the core
+/// "chat-commerce" surface (see ContactVendorSheet): customers reach out to
+/// negotiate/ask questions before any order exists, so this is intentionally
+/// NOT scoped to an Order - contrast with OrderMessage, which is post-purchase
+/// logistics chat tied to one specific order. One conversation per
+/// (customer, vendor) pair, reused across every product the customer asks
+/// about; `contextProduct*` snapshots whichever product prompted the thread's
+/// creation, shown as a reference chip in the thread header. Frozen at
+/// creation time - deliberately not kept in sync with catalogue edits/deletes
+/// so the reference chip still makes sense after a product is removed.
+model Conversation {
+  id String @id @default(uuid())
+
+  customerId String
+  customer   User   @relation("CustomerConversations", fields: [customerId], references: [id], onDelete: Cascade)
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  contextProductId    String?
+  contextProductName  String?
+  contextProductImage String?
+
+  /// Denormalized preview so the conversation list avoids an N+1 "last
+  /// message" query per row.
+  lastMessageAt       DateTime?
+  lastMessageBody     String?
+  lastMessageSenderId String?
+
+  /// Per-side read cursors. A side has unread messages when lastMessageAt is
+  /// newer than its own cursor and it wasn't the last sender.
+  customerLastReadAt DateTime?
+  vendorLastReadAt   DateTime?
+
+  /// Soft per-side hide from the list (like archiving an email thread).
+  /// Un-hides automatically for a side the next time it receives a message
+  /// from the other party - see chat.service.postMessage.
+  customerArchived Boolean @default(false)
+  vendorArchived   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages ChatMessage[]
+
+  @@unique([customerId, vendorId])
+  @@index([customerId, lastMessageAt(sort: Desc)])
+  @@index([vendorId, lastMessageAt(sort: Desc)])
+  @@map("conversations")
+}
+
+/// ChatMessage - a single message inside a Conversation.
+model ChatMessage {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderId String
+  sender   User   @relation("ChatMessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+
+  /// May be empty when the message is attachments-only (validator requires
+  /// at least one of body/attachmentUrls).
+  body           String   @db.VarChar(2000)
+  attachmentUrls String[] @default([])
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+  @@map("chat_messages")
+}
+
+/// OrderItem - line items within an order.
+/// `variantId` resolves to the exact SKU bought; `productId` is kept for fallback
+/// display when a variant is later deleted. `selectedOptions` is a frozen snapshot
+/// of the customer's option-group picks at order time so catalogue edits don't rewrite history.
+model OrderItem {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+
+  // Free-form display fields (snapshot of product at order time)
+  name        String
+  description String?
+
+  // Pricing at time of order - computed server-side, never trusted from client.
+  // unitPrice = variant.price + Σ selected option priceDeltas
+  unitPrice Decimal @db.Decimal(15, 2)
+  quantity  Int     @default(1)
+  lineTotal Decimal @db.Decimal(15, 2) /// unitPrice * quantity
+
+  /// Snapshot of option-group selections at order time.
+  /// Shape: [{groupId, groupName, items:[{itemId, itemName, priceDelta}]}]
+  selectedOptions Json?
+
+  /// Free-text delivery/packing instructions ("gift wrap please"). Max 200 chars enforced by validator.
+  specialInstructions String?
+
+  /// Per-line substitution preference (e.g. grocery order, item out of stock).
+  /// Null on lines where the customer didn't pick one.
+  substitution SubstitutionPreference?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([variantId])
+  @@map("order_items")
+}
+
+/// User sessions for JWT refresh token tracking.
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  refreshToken String   @unique
+  deviceInfo   String? /// Free-form device descriptor (legacy; superseded by deviceName/Model)
+  deviceName   String? /// User-set device name, e.g., "Bishir's iPhone"
+  deviceModel  String? /// Hardware model, e.g., "iPhone15,2", "Pixel 7 Pro"
+  userAgent    String? /// Raw User-Agent header captured at session creation
+  ipAddress    String?
+  lastUsedAt   DateTime @default(now()) /// Updated on every token refresh
+  expiresAt    DateTime
+  isRevoked    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+/// User notification preferences - stored per user, synced across devices.
+model NotificationPreferences {
+  id              String  @id @default(uuid())
+  userId          String  @unique
+  pushEnabled     Boolean @default(true)
+  orderUpdates    Boolean @default(true)
+  promotions      Boolean @default(true)
+  /// Reverse-marketplace Request alerts (a nearby customer needs something).
+  requestAlerts   Boolean @default(true)
+  emailEnabled    Boolean @default(true)
+  emailPromotions Boolean @default(false)
+  smsEnabled      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification_preferences")
+}
+
+/// Web Push (browser / PWA) subscriptions - one row per browser push endpoint.
+/// Native devices use `User.fcmToken` (FCM); web PWAs register a browser
+/// PushManager subscription here. Pruned automatically when the push service
+/// reports the endpoint as gone (404/410).
+model PushSubscription {
+  id        String  @id @default(uuid())
+  userId    String
+  endpoint  String  @unique
+  p256dh    String /// client public key (base64url) from the browser subscription
+  auth      String /// auth secret (base64url) from the browser subscription
+  userAgent String? @db.VarChar(500)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
+}
+
+/// Notification - in-app notification feed (Notification Center).
+/// Created by `notify.service.pushAndSocket` whenever a user-facing event
+/// happens: order lifecycle, wallet activity, refunds, etc.
+/// `data.route` (free-form path like `/order/abc-123`) is used by the
+/// mobile client to deep-link the user to the relevant screen when the row
+/// is tapped.
+model Notification {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type  String /// ORDER_STATUS | WALLET | REFUND | SYSTEM ...
+  title String
+  body  String @db.VarChar(500)
+  data  Json? /// { route?, orderId?, transactionId?, ... }
+
+  orderId       String?
+  transactionId String?
+
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+/// SavedAddress - user's reusable shipping addresses.
+/// `placeId` (Google place id) lets us re-look-up the address text without
+/// keeping it stale. Only one address per user can be `isDefault=true`; that
+/// constraint is enforced in the service layer rather than via a partial unique
+/// index so updates don't fight the constraint mid-transaction.
+model SavedAddress {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label     String /// "Home", "Work", or free-form
+  address   String /// Human-readable formatted address
+  lat       Float
+  lng       Float
+  placeId   String? /// Google place_id for re-geocoding if needed
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  @@index([userId])
+  @@index([userId, label])
+  @@map("saved_addresses")
+}
+
+/// Banner - admin-managed promotional banner for the home screen.
+/// `audience` is a free-form JSON predicate evaluated server-side
+/// (e.g. `{ "kyc": "VERIFIED" }` or `{ "categorySlug": "fashion" }`); empty
+/// audience = visible to all authenticated users. Banners with `startsAt` in
+/// the future or `endsAt` in the past are filtered out of the public feed.
+model Banner {
+  id       String  @id @default(uuid())
+  title    String
+  subtitle String?
+  imageUrl String
+  deepLink String? /// e.g. `/wallet`, `/orders`, or `ecommerce://...`
+  bgColor  String? /// optional accent colour hint for fallback rendering
+
+  startsAt DateTime?
+  endsAt   DateTime?
+  audience Json? /// free-form audience predicate
+  priority Int       @default(0) /// higher = surfaces first
+
+  isActive  Boolean @default(true)
+  createdBy String? /// admin user id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, startsAt, endsAt])
+  @@index([priority])
+  @@map("banners")
+}
+
+/// DiscountCode - vendor/admin managed discount codes
+model DiscountCode {
+  id                 String    @id @default(uuid())
+  code               String    @unique
+  vendorId           String?
+  vendor             Vendor?   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  type               String    /// percentage | fixed
+  discountPercentage Int?      /// Used if type is percentage
+  discountAmount     Decimal?  @db.Decimal(15, 2) /// Used if type is fixed
+  value              Decimal   @db.Decimal(15, 2) /// Denormalized discount value (percent or amount)
+  minOrder           Decimal   @default(0) @db.Decimal(15, 2)
+  maxDiscount        Decimal?  @db.Decimal(15, 2)
+  usageLimit         Int       @default(100)
+  used               Int       @default(0)
+  startDate          DateTime?
+  endDate            DateTime?
+  status             String    @default("PENDING") /// PENDING | APPROVED | REJECTED
+  rejectionReason    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  @@index([vendorId])
+  @@index([code])
+  @@index([status])
+  @@map("discount_codes")
+}
+
+/// PlatformCampaign - marketing campaigns
+model PlatformCampaign {
+  id             String    @id @default(uuid())
+  name           String
+  type           String    /// promotion | announcement | survey
+  description    String?   @db.Text
+  startDate      DateTime?
+  endDate        DateTime?
+  budget         Decimal   @db.Decimal(15, 2)
+  spent          Decimal   @default(0) @db.Decimal(15, 2)
+  targetAudience String    @default("all")
+  status         String    @default("draft") /// draft | active | completed
+
+  /// Owning vendor for vendor-created campaigns; null = platform-wide.
+  vendorId String?
+  vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdBy String? /// user id that created the campaign
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vendorId])
+  @@map("platform_campaigns")
+}
+
+/// Platform-wide settings - admin-managed key/value store.
+/// All fee constants, thresholds, and feature flags live here.
+model PlatformSetting {
+  key         String   @id
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String? /// Admin user ID
+
+  @@map("platform_settings")
+}
+
+/// Idempotency keys - prevent duplicate mutations on mobile retry.
+model IdempotencyKey {
+  key              String   @id
+  userId           String
+  route            String
+  requestHash      String
+  responseSnapshot Json?
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}
+
+/// Audit log - tracks all admin actions for compliance and debugging.
+model AuditLog {
+  id          String  @id @default(uuid())
+  adminUserId String
+  action      String /// "APPROVE_VENDOR", "SUSPEND_USER", etc.
+  entityType  String /// "VENDOR", "USER", "ORDER", etc.
+  entityId    String /// ID of the affected entity
+  details     Json? /// Additional context (e.g., reason, old value, new value)
+  ipAddress   String?
+  userAgent   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([adminUserId])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================================
+// SUPPORT - TICKETS, DISPUTES, MESSAGES
+// ============================================================
+
+enum TicketCategory {
+  ACCOUNT
+  PAYMENT
+  ORDER
+  DELIVERY
+  PRODUCT
+  TECHNICAL
+  OTHER
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  PENDING_USER
+  RESOLVED
+  CLOSED
+}
+
+enum DisputeCategory {
+  ITEM_NOT_RECEIVED
+  ITEM_DAMAGED
+  WRONG_ITEM
+  PARTIAL_DELIVERY
+  VENDOR_BEHAVIOR
+  PAYMENT_ISSUE
+  OTHER
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  AWAITING_RESPONSE
+  RESOLVED
+  REJECTED
+}
+
+enum DisputeResolution {
+  RESOLVED
+  REJECTED
+}
+
+/// SupportTicket - generic help/issue thread raised by any user (customer, vendor, admin).
+/// Not tied to a specific Order. For order-specific complaints use Dispute.
+model SupportTicket {
+  id             String         @id @default(uuid())
+  number         Int            @default(autoincrement()) /// Human-readable ticket number
+  userId         String
+  user           User           @relation("UserTickets", fields: [userId], references: [id], onDelete: Cascade)
+  category       TicketCategory
+  priority       TicketPriority @default(MEDIUM)
+  status         TicketStatus   @default(OPEN)
+  subject        String         @db.VarChar(200)
+  description    String         @db.Text
+  attachmentUrls String[] /// Cloudinary URLs supplied at creation
+  assignedToId   String? /// Admin user id assigned to handle the ticket
+  assignedTo     User?          @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  resolution     String? /// Free-text resolution summary (no refunds for tickets)
+  resolvedAt     DateTime?
+  closedAt       DateTime?
+  lastActivityAt DateTime       @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages SupportMessage[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([lastActivityAt])
+  @@map("support_tickets")
+}
+
+/// Dispute - formal complaint by a customer against a specific Order.
+model Dispute {
+  id              String             @id @default(uuid())
+  number          Int                @default(autoincrement())
+  orderId         String
+  order           Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  raisedById      String
+  raisedBy        User               @relation("RaisedDisputes", fields: [raisedById], references: [id], onDelete: Cascade)
+  category        DisputeCategory
+  status          DisputeStatus      @default(OPEN)
+  reason          String             @db.VarChar(200)
+  description     String             @db.Text
+  attachmentUrls  String[]
+  resolution      DisputeResolution?
+  resolutionNotes String?
+  resolvedById    String?
+  resolvedBy      User?              @relation("ResolvedDisputes", fields: [resolvedById], references: [id])
+  resolvedAt      DateTime?
+  lastActivityAt  DateTime           @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages SupportMessage[]
+
+  @@index([orderId])
+  @@index([raisedById])
+  @@index([status])
+  @@index([lastActivityAt])
+  @@map("disputes")
+}
+
+/// SupportMessage - a single message inside either a SupportTicket or a Dispute thread.
+/// Exactly one of ticketId or disputeId is set. `isInternal=true` is admin-only and hidden from
+/// non-admin users when serializing the thread.
+model SupportMessage {
+  id             String         @id @default(uuid())
+  ticketId       String?
+  ticket         SupportTicket? @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  disputeId      String?
+  dispute        Dispute?       @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  fromUserId     String
+  fromUser       User           @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  body           String         @db.VarChar(2000)
+  attachmentUrls String[]
+  isInternal     Boolean        @default(false)
+  readAt         DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+  @@index([disputeId])
+  @@index([createdAt])
+  @@map("support_messages")
+}
+
+// ============================================================
+// WAITLIST - pre-launch sign-ups from the marketing website.
+// ============================================================
+// Shoppers / vendors who tap "Notify me" before launch leave their contact
+// info here. Admin can view + export the list. No PII enforcement - phone
+// is the only required identifier.
+
+enum WaitlistRole {
+  CUSTOMER
+  VENDOR
+  UNKNOWN
+}
+
+enum WaitlistPlatform {
+  IOS
+  ANDROID
+  UNKNOWN
+}
+
+model WaitlistEntry {
+  id        String           @id @default(uuid())
+  name      String           @db.VarChar(120)
+  phone     String           @db.VarChar(20)
+  email     String?          @db.VarChar(160)
+  city      String?          @db.VarChar(80)
+  notes     String?          @db.VarChar(1000)
+  role      WaitlistRole     @default(UNKNOWN)
+  platform  WaitlistPlatform @default(UNKNOWN)
+  source    String?          @db.VarChar(255) /// Page URL the form was submitted from
+  ipAddress String?          @db.VarChar(64)
+  userAgent String?          @db.VarChar(500)
+
+  createdAt DateTime @default(now())
+
+  @@index([role])
+  @@index([phone])
+  @@index([createdAt])
+  @@map("waitlist_entries")
+}
+
+// ============================================================
+// CALLBACK REQUESTS - customer "request a callback" leads
+// ============================================================
+// A customer on the storefront taps "Request a callback" and the vendor gets
+// an email with their phone. Persist a row so admins can audit/oversee these
+// leads (who asked, which shop, from which product) instead of them living
+// only in a vendor inbox.
+
+model CallbackRequest {
+  id            String   @id @default(uuid())
+  vendorId      String
+  vendor        Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  customerName  String?
+  customerPhone String
+  /// Optional email left by the customer (validator scoping).
+  customerEmail String?
+  /// Product the customer was looking at when they asked, if any.
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  /// Free-form note from the customer.
+  note          String?
+  ipAddress     String?  @db.VarChar(64)
+  userAgent     String?  @db.VarChar(255)
+
+  createdAt DateTime @default(now())
+
+  @@index([vendorId, createdAt])
+  @@index([customerPhone])
+  @@map("callback_requests")
+}
+
+// ============================================================
+// REQUESTS - reverse marketplace ("I need X, sellers respond")
+// ============================================================
+// A customer broadcasts a need; the platform matches relevant sellers by
+// trade + distance (or keyword when no category is chosen) and pushes the
+// request to them. Sellers reply with a message and an optional price.
+// Nothing here touches payment or shipping - customer and seller settle
+// directly. See modules/request for the matching + fan-out logic.
+
+enum RequestStatus {
+  OPEN
+  ASSIGNED
+  EXPIRED
+  CANCELLED
+}
+
+enum RequestResponseStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+}
+
+/// How far the request is broadcast: NEARBY = within radiusKm of the need,
+/// ANYWHERE = the whole platform (no distance limit).
+enum RequestReach {
+  NEARBY
+  ANYWHERE
+}
+
+/// A customer's broadcast need. Private - never listed publicly.
+model Request {
+  id String @id @default(uuid())
+
+  customerId String
+  customer   User   @relation("CustomerRequests", fields: [customerId], references: [id], onDelete: Cascade)
+
+  /// Trade/category the need falls under. Null when the customer chose
+  /// "Other / not sure" - matching then falls back to keyword matching.
+  categoryId    String?
+  category      VendorCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategoryId String?
+  subcategory   Subcategory?    @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
+  title       String
+  description String?
+  images      String[] @default([])
+  videos      String[] @default([])
+
+  quantity  Int?
+  budgetMin Decimal? @db.Decimal(15, 2)
+  budgetMax Decimal? @db.Decimal(15, 2)
+  neededBy  DateTime?
+  /// Free-form urgency hint: NORMAL | URGENT.
+  urgency   String?  @db.VarChar(20)
+
+  // Where the need is. lat/lng are optional: they only sharpen NEARBY
+  // matching (distance ranking + the radius), and a customer who denied GPS
+  // can still post - matching then runs on state/LGA scope alone.
+  address String
+  lat     Float?
+  lng     Float?
+  placeId String?
+
+  /// Nigerian State + LGA the need is in (picked on the compose screen).
+  /// Scopes NEARBY matching: sellers in this LGA, then this state, before the
+  /// radius applies. Sparse tagging means findMatches falls back to a plain
+  /// radius search when nothing matches the scope.
+  state String?
+  lga   String?
+
+  reach    RequestReach @default(NEARBY)
+  radiusKm Int          @default(15)
+
+  status RequestStatus @default(OPEN)
+
+  /// Set when the customer accepts a response (mirrors that response's vendor).
+  assignedVendorId String?
+  assignedAt       DateTime?
+
+  /// When the request stops accepting responses (set on create, ~48h out).
+  expiresAt DateTime?
+  closedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  responses RequestResponse[]
+  pings     RequestPing[]
+
+  @@index([customerId, createdAt])
+  @@index([status, expiresAt])
+  @@index([categoryId, status])
+  @@index([assignedVendorId])
+  @@index([state, lga])
+  @@map("requests")
+}
+
+/// A seller's reply to a Request. One per (request, vendor). Price is
+/// optional - a seller can simply message "I can do it".
+model RequestResponse {
+  id        String  @id @default(uuid())
+  requestId String
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor  @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  message   String   @db.VarChar(1000)
+  price     Decimal? @db.Decimal(15, 2)
+  /// "negotiable", "per hour", ...
+  priceNote String?  @db.VarChar(120)
+  /// "ready Friday", "~30 mins", ...
+  etaText   String?  @db.VarChar(120)
+
+  status RequestResponseStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([requestId, vendorId])
+  @@index([vendorId, createdAt])
+  @@map("request_responses")
+}
+
+/// Which sellers a Request was pushed to (and whether they've seen it).
+/// Drives the vendor inbox badge, prevents double-pinging, and lets the
+/// top-up job ping the next batch when nobody has responded.
+model RequestPing {
+  id        String  @id @default(uuid())
+  requestId String
+  request   Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor  @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  notifiedAt DateTime  @default(now())
+  seenAt     DateTime?
+
+  @@unique([requestId, vendorId])
+  @@index([requestId])
+  @@index([vendorId, seenAt])
+  @@map("request_pings")
+}

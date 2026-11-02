@@ -1,0 +1,14 @@
+{
+  "name": "MySooq",
+  "short_name": "MySooq",
+  "description": "MySooq - discover and shop from local vendors.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B3D24",
+  "icons": [
+    { "src": "/icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

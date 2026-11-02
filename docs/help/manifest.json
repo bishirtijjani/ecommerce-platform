@@ -1,0 +1,19 @@
+{
+  "roles": [
+    { "id": "customer", "label": "Customer", "public": true }
+  ],
+  "categories": [
+    { "id": "general", "label": "General" }
+  ],
+  "guides": [
+    {
+      "role": "customer",
+      "slug": "getting-started",
+      "title": "Getting Started",
+      "summary": "Placeholder guide - help center content has not been written yet for this product.",
+      "category": "general",
+      "order": 1,
+      "file": "placeholder.md"
+    }
+  ]
+}
