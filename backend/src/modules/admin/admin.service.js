@@ -266,14 +266,14 @@ const updateCustomer = async (customerId, data, adminUserId, ipAddress, userAgen
     notifyUser(customerId, {
       title: next === 'ACTIVE' ? 'Account reactivated' : `Account ${next.toLowerCase()}`,
       body: next === 'ACTIVE'
-        ? 'Your MySooq account is active again. Welcome back.'
+        ? 'Your Marketplace account is active again. Welcome back.'
         : `Your account status is now ${next.toLowerCase()}${reason ? `: ${reason}` : '.'}`,
       audience: 'customer',
     });
   } else if ('email' in changes || 'phone' in changes) {
     notifyUser(customerId, {
       title: 'Account details updated',
-      body: 'Your login details were updated by MySooq support. If this was not you, contact support immediately.',
+      body: 'Your login details were updated by Marketplace support. If this was not you, contact support immediately.',
       audience: 'customer',
     });
   }
@@ -371,7 +371,7 @@ const updateLinkedUserAccount = async ({
 
   notifyUser(userId, {
     title: 'Account details updated',
-    body: 'Your account details were updated by MySooq support. If this was not you, contact support immediately.',
+    body: 'Your account details were updated by Marketplace support. If this was not you, contact support immediately.',
   });
 
   return updated;
@@ -787,14 +787,14 @@ const forceCancelOrder = async (orderId, reason, adminUserId, ipAddress, userAge
   notifyUser(order.customerId, {
     type: 'ORDER_STATUS',
     title: 'Order cancelled',
-    body: `Your order was cancelled by MySooq support${reason ? `: ${reason}` : '.'}`,
+    body: `Your order was cancelled by Marketplace support${reason ? `: ${reason}` : '.'}`,
     route: `/order/${orderId}`,
     audience: 'customer',
   });
   notifyUser(order.vendor?.userId, {
     type: 'ORDER',
     title: 'Order cancelled by support',
-    body: `An order was cancelled by MySooq support${reason ? `: ${reason}` : '.'}`,
+    body: `An order was cancelled by Marketplace support${reason ? `: ${reason}` : '.'}`,
     route: `/vendor/orders/${orderId}`,
     audience: 'vendor',
   });
@@ -977,7 +977,7 @@ const approveVendor = async (vendorId, adminUserId, ipAddress, userAgent) => {
   notifyUser(vendor.userId, {
     type: 'ACCOUNT',
     title: 'Vendor approved',
-    body: `${vendor.name} is now live on MySooq. Open your dashboard to start selling.`,
+    body: `${vendor.name} is now live on Marketplace. Open your dashboard to start selling.`,
     route: '/vendor/dashboard',
     audience: 'vendor',
   });
@@ -1157,7 +1157,7 @@ const updateVendorProfile = async (vendorId, data, adminUserId, ipAddress, userA
   notifyUser(vendor.userId, {
     type: 'SYSTEM',
     title: 'Shop profile updated',
-    body: 'MySooq support updated your shop profile. Open your shop settings to review it.',
+    body: 'Marketplace support updated your shop profile. Open your shop settings to review it.',
     route: '/vendor/shop',
     audience: 'vendor',
   });
@@ -2357,7 +2357,7 @@ const broadcastCampaignNotification = async (campaign) => {
         notifyUser(u.id, {
           type: 'PROMOTION',
           title: campaign.name,
-          body: campaign.description || 'A new offer is live on MySooq. Tap to explore.',
+          body: campaign.description || 'A new offer is live on Marketplace. Tap to explore.',
           route: '/home',
         }),
       ),
@@ -3000,7 +3000,7 @@ const sendTestNotification = async (adminUserId) => {
   const row = await notifyService.pushAndSocket(adminUserId, {
     type: 'SYSTEM',
     title: 'Test notification',
-    body: 'If you can see this, MySooq notifications are working on this device.',
+    body: 'If you can see this, Marketplace notifications are working on this device.',
     data: { route: '/notifications', test: true },
   });
   return { notificationId: row?.id || null, persisted: !!row };
@@ -3019,7 +3019,7 @@ const broadcastTestNotification = async (adminUserId) => {
       batch.map((u) =>
         notifyUser(u.id, {
           type: 'SYSTEM',
-          title: 'MySooq test notification',
+          title: 'Marketplace test notification',
           body: 'If you see this, notifications are working on your device.',
           route: '/notifications',
         }),

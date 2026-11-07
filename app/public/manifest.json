@@ -1,7 +1,7 @@
 {
-  "name": "MySooq",
-  "short_name": "MySooq",
-  "description": "MySooq - discover and shop from local vendors.",
+  "name": "Marketplace",
+  "short_name": "Marketplace",
+  "description": "Marketplace - discover and shop from local vendors.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

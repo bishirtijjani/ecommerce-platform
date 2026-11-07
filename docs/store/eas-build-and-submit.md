@@ -1,6 +1,6 @@
 # EAS - build & submit guide
 
-How to take the MySooq customer app from `git push` to a TestFlight / Play
+How to take the Marketplace customer app from `git push` to a TestFlight / Play
 Console upload. All commands run inside `app/`.
 
 ## Prerequisites (one-time setup)
@@ -61,7 +61,7 @@ doesn't exist yet, so create it (or let `eas submit` create it) and pass
 
 For Android: download the service-account JSON from Google Cloud Console for
 the project linked to Play Console (roles **Service Account User** +
-**App Manager**), save it as `app/mysooq-service-account.json` (gitignored),
+**App Manager**), save it as `app/marketplace-service-account.json` (gitignored),
 then `eas submit` will use it via `serviceAccountKeyPath`.
 
 ---
@@ -156,12 +156,12 @@ the same native version.
 - [ ] Apple Developer Program enrolment ($99/year)
 - [ ] Google Play Console account ($25 one-time)
 - [ ] Fill `REPLACE_WITH_APPLE_TEAM_ID` + `REPLACE_WITH_APP_STORE_CONNECT_APP_ID` in `app/eas.json` (or pass via CLI)
-- [ ] Create + save `app/mysooq-service-account.json` (gitignored) for `eas submit` → Play
+- [ ] Create + save `app/marketplace-service-account.json` (gitignored) for `eas submit` → Play
 - [ ] No EAS secrets required for v1 (Sentry is skipped)
 - [ ] App icon exists - `app/assets/icon.png` (regenerate via `npm run assets:customer`)
 - [ ] Adaptive icon - `app/assets/adaptive-icon.png` + `adaptive-icon-bg.png`
 - [ ] Splash - `app/assets/splash-icon.png`
 - [ ] Screenshots - `store-assets/customer/` (see `docs/store/screenshot-plan.md`)
-- [ ] Privacy policy + ToS deployed at public URLs (`mysooq.ng/legal/*`)
+- [ ] Privacy policy + ToS deployed at public URLs (`marketplace.ng/legal/*`)
 - [ ] App Store privacy questionnaire + Play data-safety form - see `docs/store/`
 - [ ] Demo account seeded to PROD and review notes pasted (see `console-fill-sheet.md`)

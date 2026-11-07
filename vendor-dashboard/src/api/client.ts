@@ -10,8 +10,8 @@ export interface ApiError extends Error {
   sessionExpired?: boolean;
 }
 
-const ACCESS_KEY = 'mysooq_vendor_access';
-const REFRESH_KEY = 'mysooq_vendor_refresh';
+const ACCESS_KEY = 'marketplace_vendor_access';
+const REFRESH_KEY = 'marketplace_vendor_refresh';
 
 export const tokenStorage = {
   getAccess: () => localStorage.getItem(ACCESS_KEY),

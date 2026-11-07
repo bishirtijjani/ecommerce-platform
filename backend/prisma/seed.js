@@ -746,7 +746,7 @@ async function main() {
     name: 'FMK Clothing',
     description: "FMK Clothing is a premium fashion brand offering quality men's and women's wear that blends style, comfort and culture.",
     address: 'Abuja, Nigeria', lat: 9.0765, lng: 7.3986, averageRating: 4.8,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/fmk-clothing.jpeg?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/fmk-clothing.jpeg?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=70',
@@ -791,7 +791,7 @@ async function main() {
     name: 'Mudatex',
     description: 'Mudatex is a textile and fabric house supplying premium Ankara, lace and brocade for tailors and everyday shoppers alike.',
     address: 'Kaduna, Nigeria', lat: 10.5105, lng: 7.4165, averageRating: 4.7,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/mudatex.png?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/mudatex.png?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&q=70',
@@ -813,7 +813,7 @@ async function main() {
     name: 'Sarkin Mota Autos',
     description: 'Sarkin Mota Autos deals in clean, verified foreign and Nigerian-used vehicles with full inspection before sale.',
     address: 'Kano, Nigeria', lat: 12.0022, lng: 8.5920, averageRating: 4.9,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/sarkin-mota-autos.jpg?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/sarkin-mota-autos.jpg?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=500&q=70',
@@ -836,7 +836,7 @@ async function main() {
     name: 'Wasse Investments',
     description: 'Wasse Investments is a textile and fabric house trading in premium wasse, brocade and lace for fashion and tailoring.',
     address: 'Kano, Nigeria', lat: 12.0022, lng: 8.5920, averageRating: 4.7,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/wasse-investments.png?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/wasse-investments.png?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=70',
@@ -859,7 +859,7 @@ async function main() {
     name: 'Elite Cycle Construction',
     description: 'Elite Cycle Construction builds and sells residential and commercial properties, with land and plots across Abuja.',
     address: 'Abuja, Nigeria', lat: 9.0410, lng: 7.4910, averageRating: 4.6,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/elite-cycle-construction.png?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/elite-cycle-construction.png?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&q=70',
@@ -882,7 +882,7 @@ async function main() {
     name: 'Danmama Smart Homes',
     description: 'Danmama Smart Homes offers smart-fitted residential properties, houses and apartments across Abuja and beyond.',
     address: 'Abuja, Nigeria', lat: 9.0579, lng: 7.4951, averageRating: 4.9,
-    logoUrl: 'https://api.mysooq.ng/shop-logos/danmama-smart-homes.png?v=2',
+    logoUrl: 'https://api.marketplace.ng/shop-logos/danmama-smart-homes.png?v=2',
     coverImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=400&fit=crop&q=70',
     photos: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=70',
@@ -942,7 +942,7 @@ async function main() {
         name: 'El samad',
         description: 'El samad offers ready-to-wear traditional and casual outfits for the whole family, sourced locally.',
         address: 'Katsina, Nigeria', lat: 13.0059, lng: 7.6017, averageRating: 4.5,
-        logoUrl: 'https://api.mysooq.ng/shop-logos/el-samad.jpg?v=2',
+        logoUrl: 'https://api.marketplace.ng/shop-logos/el-samad.jpg?v=2',
         coverImageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&h=400&fit=crop&q=70',
         photos: [
           'https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=70',

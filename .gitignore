@@ -20,7 +20,7 @@ android/
 *.p12
 *.key
 *.mobileprovision
-mysooq-service-account.json
+marketplace-service-account.json
 *.service-account.json
 *.orig.*
 web-build/

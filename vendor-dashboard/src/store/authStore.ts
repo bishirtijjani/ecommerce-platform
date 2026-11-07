@@ -3,7 +3,7 @@ import { tokenStorage } from '../api/client';
 import { registerWebPush, unregisterWebPush } from '../services/push';
 import type { AuthUser } from '../types';
 
-const USER_KEY = 'mysooq_vendor_user';
+const USER_KEY = 'marketplace_vendor_user';
 
 interface AuthState {
   user: AuthUser | null;

@@ -58,7 +58,7 @@ const sendWelcomeNotification = async (user) => {
     const isVendor = user.role === "VENDOR";
     await notifyService.pushAndSocket(user.id, {
       type: "SYSTEM",
-      title: isVendor ? "Welcome to MySooq sellers" : "Welcome to MySooq",
+      title: isVendor ? "Welcome to Marketplace sellers" : "Welcome to Marketplace",
       body: isVendor
         ? "Your application is in. We will notify you the moment it is reviewed."
         : "Browse local vendors, chat with them directly, or post a request and let sellers come to you.",
@@ -1324,7 +1324,7 @@ const confirmPhoneChange = async (userId, { newPhone, otp }) => {
     messagingService
       .sendSms(
         oldPhone,
-        `Security notice: the phone number on your ${config.APP_NAME || 'MySooq'} account was changed to ${maskedNew}. If this wasn't you, contact support immediately.`,
+        `Security notice: the phone number on your ${config.APP_NAME || 'Marketplace'} account was changed to ${maskedNew}. If this wasn't you, contact support immediately.`,
       )
       .catch((err) => logger.warn('Old-phone change-notice SMS failed', { userId, error: err.message }));
   }

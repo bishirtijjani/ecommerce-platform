@@ -1,6 +1,6 @@
-# MySooq visual asset generator
+# Marketplace visual asset generator
 
-Renders the MySooq **customer app** store/brand assets and store screenshots
+Renders the Marketplace **customer app** store/brand assets and store screenshots
 from HTML/CSS - no Figma, Inkscape, or Pillow required. One command, exact
 store dimensions.
 
@@ -43,7 +43,7 @@ size because the layout is viewport-relative.
 
 ## How it works
 
-- `brand.css` — MySooq brand tokens mirrored from `app/src/theme/tokens.js`
+- `brand.css` — Marketplace brand tokens mirrored from `app/src/theme/tokens.js`
   (light) and `brand/tokens.json`, plus the four Roboto weights (`fonts/`,
   Apache-2.0).
 - `templates/icon.html` — one parametrized template for icon / adaptive icon /

@@ -11,7 +11,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   ha: 'Hausa',
 };
 
-export const LOCALE_STORAGE_KEY = 'mysooq_vendor_locale';
+export const LOCALE_STORAGE_KEY = 'marketplace_vendor_locale';
 
 const isLocale = (value: string | null | undefined): value is Locale =>
   !!value && (SUPPORTED_LOCALES as readonly string[]).includes(value);

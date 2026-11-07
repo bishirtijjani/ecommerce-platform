@@ -73,7 +73,7 @@ const sendOtpEmail = async (email, otp) => {
               <!-- Header -->
               <tr>
                 <td style="padding:32px 32px 0;text-align:center;">
-                  <h1 style="margin:0;font-size:24px;color:#1a1a2e;font-weight:700;">MySooq.ng</h1>
+                  <h1 style="margin:0;font-size:24px;color:#1a1a2e;font-weight:700;">Marketplace.ng</h1>
                 </td>
               </tr>
               <!-- Content -->
@@ -92,7 +92,7 @@ const sendOtpEmail = async (email, otp) => {
                 <td style="padding:0 32px 32px;text-align:center;">
                   <hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 16px;">
                   <p style="margin:0;font-size:12px;color:#9ca3af;">
-                    &copy; ${new Date().getFullYear()} MySooq.ng. All rights reserved.
+                    &copy; ${new Date().getFullYear()} Marketplace.ng. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -106,7 +106,7 @@ const sendOtpEmail = async (email, otp) => {
 
   return sendEmail({
     to: email,
-    subject: `${otp} - Your MySooq.ng verification code`,
+    subject: `${otp} - Your Marketplace.ng verification code`,
     html,
     text: `Your verification code is: ${otp}. It expires in 10 minutes.`,
   });
@@ -130,7 +130,7 @@ const sendWelcomeEmail = async (email, firstName) => {
             <table width="100%" style="max-width:480px;background-color:#ffffff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
               <tr>
                 <td style="padding:32px 32px 0;text-align:center;">
-                  <h1 style="margin:0;font-size:24px;color:#1a1a2e;font-weight:700;">Welcome to MySooq.ng!</h1>
+                  <h1 style="margin:0;font-size:24px;color:#1a1a2e;font-weight:700;">Welcome to Marketplace.ng!</h1>
                 </td>
               </tr>
               <tr>
@@ -152,7 +152,7 @@ const sendWelcomeEmail = async (email, firstName) => {
                 <td style="padding:0 32px 32px;text-align:center;">
                   <hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 16px;">
                   <p style="margin:0;font-size:12px;color:#9ca3af;">
-                    &copy; ${new Date().getFullYear()} MySooq.ng
+                    &copy; ${new Date().getFullYear()} Marketplace.ng
                   </p>
                 </td>
               </tr>
@@ -166,9 +166,9 @@ const sendWelcomeEmail = async (email, firstName) => {
 
   return sendEmail({
     to: email,
-    subject: `Welcome to MySooq.ng, ${firstName}!`,
+    subject: `Welcome to Marketplace.ng, ${firstName}!`,
     html,
-    text: `Hi ${firstName}, welcome to MySooq.ng! Your account is ready.`,
+    text: `Hi ${firstName}, welcome to Marketplace.ng! Your account is ready.`,
   });
 };
 
@@ -209,7 +209,7 @@ const sendPasswordResetEmail = async (email, otp) => {
                 <td style="padding:0 32px 32px;text-align:center;">
                   <hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 16px;">
                   <p style="margin:0;font-size:12px;color:#9ca3af;">
-                    &copy; ${new Date().getFullYear()} MySooq.ng
+                    &copy; ${new Date().getFullYear()} Marketplace.ng
                   </p>
                 </td>
               </tr>
@@ -247,7 +247,7 @@ const emailBase = (content) => `
         <table width="100%" style="max-width:520px;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
           <tr>
             <td style="background:linear-gradient(135deg,#EA580C,#C2410C);padding:28px 32px;border-radius:16px 16px 0 0;">
-              <h1 style="margin:0;font-size:22px;color:#ffffff;font-weight:700;letter-spacing:-0.3px;">MySooq.ng</h1>
+              <h1 style="margin:0;font-size:22px;color:#ffffff;font-weight:700;letter-spacing:-0.3px;">Marketplace.ng</h1>
               <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.8);">Vendor Notification</p>
             </td>
           </tr>
@@ -258,8 +258,8 @@ const emailBase = (content) => `
           </tr>
           <tr>
             <td style="padding:0 32px 28px;text-align:center;border-top:1px solid #f3f4f6;">
-              <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;">&copy; ${new Date().getFullYear()} MySooq.ng. All rights reserved.</p>
-              <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">Questions? Contact <a href="mailto:support@mysooq.ng" style="color:#EA580C;text-decoration:none;">support@mysooq.ng</a></p>
+              <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;">&copy; ${new Date().getFullYear()} Marketplace.ng. All rights reserved.</p>
+              <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">Questions? Contact <a href="mailto:support@marketplace.ng" style="color:#EA580C;text-decoration:none;">support@marketplace.ng</a></p>
             </td>
           </tr>
         </table>
@@ -287,7 +287,7 @@ const sendVendorApprovedEmail = async (email, vendorName, dashboardUrl) => {
     <h2 style="margin:0 0 8px;font-size:22px;color:#10b981;font-weight:700;">Application Approved!</h2>
     <p style="margin:0 0 16px;font-size:16px;color:#374151;">Congratulations, <strong>${vendorName}</strong>!</p>
     <p style="margin:0 0 20px;font-size:15px;color:#6b7280;line-height:1.6;">
-      Your vendor application on MySooq.ng has been <strong style="color:#10b981;">approved</strong>.
+      Your vendor application on Marketplace.ng has been <strong style="color:#10b981;">approved</strong>.
       You can now log in to your vendor dashboard and start listing your products.
     </p>
     <div style="background:#f0fdf4;border-radius:10px;padding:20px;margin:20px 0;">
@@ -306,7 +306,7 @@ const sendVendorApprovedEmail = async (email, vendorName, dashboardUrl) => {
 
   return sendEmail({
     to: email,
-    subject: `Your MySooq.ng vendor application is approved - ${vendorName}`,
+    subject: `Your Marketplace.ng vendor application is approved - ${vendorName}`,
     html,
     text: `Congratulations! Your vendor application for ${vendorName} has been approved. Log in to your dashboard to get started.`,
   });
@@ -333,15 +333,15 @@ const sendVendorRejectedEmail = async (email, vendorName, reason) => {
     </div>
     <p style="margin:20px 0 0;font-size:14px;color:#6b7280;">
       If you believe this decision was made in error, please contact us at
-      <a href="mailto:support@mysooq.ng" style="color:#EA580C;">support@mysooq.ng</a>.
+      <a href="mailto:support@marketplace.ng" style="color:#EA580C;">support@marketplace.ng</a>.
     </p>
   `);
 
   return sendEmail({
     to: email,
-    subject: `Update on your MySooq.ng vendor application`,
+    subject: `Update on your Marketplace.ng vendor application`,
     html,
-    text: `Dear ${vendorName}, your vendor application was not approved. Reason: ${reason}. Please contact support@mysooq.ng for more information.`,
+    text: `Dear ${vendorName}, your vendor application was not approved. Reason: ${reason}. Please contact support@marketplace.ng for more information.`,
   });
 };
 
@@ -359,7 +359,7 @@ const sendVendorSuspendedEmail = async (email, vendorName, reason) => {
     ${infoBox('#f59e0b', '#fffbeb', [['Suspension Reason', reason || 'Account review in progress.']])}
     <p style="margin:20px 0;font-size:14px;color:#6b7280;line-height:1.6;">
       To appeal this decision or get more information, please contact our vendor support team at
-      <a href="mailto:support@mysooq.ng" style="color:#EA580C;">support@mysooq.ng</a>
+      <a href="mailto:support@marketplace.ng" style="color:#EA580C;">support@marketplace.ng</a>
       or call <strong>+234-800-000-0000</strong>.
     </p>
     <p style="margin:0;font-size:13px;color:#9ca3af;">We aim to resolve all suspensions as quickly as possible.</p>
@@ -367,9 +367,9 @@ const sendVendorSuspendedEmail = async (email, vendorName, reason) => {
 
   return sendEmail({
     to: email,
-    subject: `Important: Your MySooq.ng vendor account has been suspended`,
+    subject: `Important: Your Marketplace.ng vendor account has been suspended`,
     html,
-    text: `Dear ${vendorName}, your vendor account has been suspended. Reason: ${reason}. Contact support@mysooq.ng to appeal.`,
+    text: `Dear ${vendorName}, your vendor account has been suspended. Reason: ${reason}. Contact support@marketplace.ng to appeal.`,
   });
 };
 
@@ -395,7 +395,7 @@ const sendVendorUnsuspendedEmail = async (email, vendorName, dashboardUrl) => {
 
   return sendEmail({
     to: email,
-    subject: `Your MySooq.ng vendor account has been restored - ${vendorName}`,
+    subject: `Your Marketplace.ng vendor account has been restored - ${vendorName}`,
     html,
     text: `Dear ${vendorName}, your vendor account suspension has been lifted. You can now log in and resume operations.`,
   });
@@ -425,7 +425,7 @@ const sendContactInquiryEmail = async ({ to, name, email, message, source }) => 
 
   const html = emailBase(`
     <h2 style="margin:0 0 8px;font-size:22px;color:#111827;font-weight:700;">New contact form message</h2>
-    <p style="margin:0 0 20px;font-size:14px;color:#6b7280;">Someone reached out via the MySooq.ng website contact form.</p>
+    <p style="margin:0 0 20px;font-size:14px;color:#6b7280;">Someone reached out via the Marketplace.ng website contact form.</p>
     ${infoBox('#EA580C', '#fff7ed', [
       ['Name', safeName],
       ['Email', `<a href="mailto:${safeEmail}" style="color:#EA580C;">${safeEmail}</a>`],
@@ -439,7 +439,7 @@ const sendContactInquiryEmail = async ({ to, name, email, message, source }) => 
   `);
 
   return getTransporter().sendMail({
-    from: `"MySooq.ng" <${config.SMTP_FROM_EMAIL}>`,
+    from: `"Marketplace.ng" <${config.SMTP_FROM_EMAIL}>`,
     to,
     replyTo: email,
     subject: `Website contact - ${name}`,
@@ -460,24 +460,24 @@ const sendContactConfirmationEmail = async ({ name, email }) => {
     <h2 style="margin:0 0 8px;font-size:22px;color:#111827;font-weight:700;">We got your message</h2>
     <p style="margin:0 0 16px;font-size:16px;color:#374151;">Hi ${safeName},</p>
     <p style="margin:0 0 20px;font-size:15px;color:#6b7280;line-height:1.6;">
-      Thanks for reaching out to MySooq.ng. A human on our team will get back to you
+      Thanks for reaching out to Marketplace.ng. A human on our team will get back to you
       within one business day at this email address.
     </p>
     <div style="background:#f0fdf4;border-radius:10px;padding:16px 20px;margin:20px 0;">
       <p style="margin:0;font-size:14px;color:#166534;">
         Need a faster response? You can also email us at
-        <a href="mailto:hello@mysooq.ng" style="color:#EA580C;">hello@mysooq.ng</a>
+        <a href="mailto:hello@marketplace.ng" style="color:#EA580C;">hello@marketplace.ng</a>
         or message us on WhatsApp.
       </p>
     </div>
-    <p style="margin:0;font-size:13px;color:#9ca3af;">- The MySooq.ng team</p>
+    <p style="margin:0;font-size:13px;color:#9ca3af;">- The Marketplace.ng team</p>
   `);
 
   return sendEmail({
     to: email,
-    subject: 'We received your message - MySooq.ng',
+    subject: 'We received your message - Marketplace.ng',
     html,
-    text: `Hi ${name},\n\nThanks for reaching out to MySooq.ng. A human on our team will get back to you within one business day.\n\n- The MySooq.ng team`,
+    text: `Hi ${name},\n\nThanks for reaching out to Marketplace.ng. A human on our team will get back to you within one business day.\n\n- The Marketplace.ng team`,
   });
 };
 
@@ -577,7 +577,7 @@ const sendVendorCallbackRequestEmail = async ({ to, vendorName, customerName, cu
 
   const html = emailBase(`
     <h2 style="margin:0 0 8px;font-size:22px;color:#111827;font-weight:700;">A customer wants a callback</h2>
-    <p style="margin:0 0 20px;font-size:14px;color:#6b7280;">Someone browsing your shop on MySooq.ng asked you to call them back.</p>
+    <p style="margin:0 0 20px;font-size:14px;color:#6b7280;">Someone browsing your shop on Marketplace.ng asked you to call them back.</p>
     ${infoBox('#EA580C', '#fff7ed', [
       ['Customer', safeCustomerName],
       ['Phone', `<a href="tel:${safePhone}" style="color:#EA580C;">${safePhone}</a>`],
@@ -590,7 +590,7 @@ const sendVendorCallbackRequestEmail = async ({ to, vendorName, customerName, cu
     to,
     subject: `Callback request from ${customerName}${productName ? ` - ${productName}` : ''}`,
     html,
-    text: `${customerName} asked for a callback about your shop on MySooq.ng.\n\nPhone: ${customerPhone}${productName ? `\nAbout: ${productName}` : ''}\n\nGive them a call when you're free.`,
+    text: `${customerName} asked for a callback about your shop on Marketplace.ng.\n\nPhone: ${customerPhone}${productName ? `\nAbout: ${productName}` : ''}\n\nGive them a call when you're free.`,
   }).then((info) => {
     logger.info('Vendor callback request email sent', { to, vendorName, messageId: info.messageId });
     return info;

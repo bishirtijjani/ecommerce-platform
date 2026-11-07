@@ -2,8 +2,8 @@
  * pendingIntent - carries an "order intent" from the marketing site's hero into
  * the app, surviving the sign-in flow.
  *
- * The website (mysooq.ng) renders Glovo-style category cards that link here as
- * `https://mysooq.ng/?intent=food`. We read that `intent` on entry, map it
+ * The website (marketplace.ng) renders Glovo-style category cards that link here as
+ * `https://marketplace.ng/?intent=food`. We read that `intent` on entry, map it
  * to a navigation action, and replay it once the user is authenticated and past
  * the biometric gate (see AppNavigator). A logged-out visitor therefore lands
  * exactly where they tapped - "just works after auth".
@@ -18,7 +18,7 @@
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const STORAGE_KEY = "mysooq.pendingIntent";
+const STORAGE_KEY = "marketplace.pendingIntent";
 
 // Intent slug → navigation action. Mirrors the in-app Home tile handlers
 // (screens/main/HomeScreen.js): category tiles open the vendor storefront
@@ -59,7 +59,7 @@ export function actionForIntent(intent) {
 
 /**
  * Extract the `intent` query param from an entry URL. Parses the query manually
- * rather than via the URL constructor so custom schemes (`mysooq://...`) that
+ * rather than via the URL constructor so custom schemes (`marketplace://...`) that
  * the RN URL polyfill mishandles still work.
  */
 export function parseIntentFromUrl(url) {

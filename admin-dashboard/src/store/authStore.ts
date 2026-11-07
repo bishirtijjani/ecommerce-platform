@@ -4,7 +4,7 @@ import { logout as logoutApi } from '../api/auth';
 import { registerWebPush, unregisterWebPush } from '../services/push';
 import type { AuthUser } from '../types';
 
-const USER_KEY = 'mysooq_admin_user';
+const USER_KEY = 'marketplace_admin_user';
 
 interface AuthState {
   user: AuthUser | null;

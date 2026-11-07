@@ -14,7 +14,7 @@ export default function AuthBrandMark({ style }) {
       ]}
       accessible
       accessibilityRole="image"
-      accessibilityLabel="MySooq"
+      accessibilityLabel="Marketplace"
     >
       <Image
         source={require("../../assets/brand-logo.png")}
@@ -29,7 +29,7 @@ export default function AuthBrandMark({ style }) {
           letterSpacing: -0.5,
         }}
       >
-        MySooq
+        Marketplace
       </Text>
     </View>
   );

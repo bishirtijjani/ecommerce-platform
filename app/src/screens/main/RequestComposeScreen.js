@@ -139,7 +139,7 @@ export default function RequestComposeScreen() {
           "Location needed",
           Platform.OS === "web"
             ? "Allow location for this site in your browser settings, then try again."
-            : "Allow location access for MySooq in settings, then try again.",
+            : "Allow location access for Marketplace in settings, then try again.",
           [
             { text: "Choose area", onPress: () => setReach("ANYWHERE") },
             ...(Platform.OS !== "web"

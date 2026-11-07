@@ -20,7 +20,7 @@ import type {
 } from '../../types';
 
 const LIMIT = 20;
-const SUPPORT_EMAIL = 'support@mysooq.ng';
+const SUPPORT_EMAIL = 'support@marketplace.ng';
 const SUPPORT_PHONE = '0800-000-0000';
 
 type Tone = 'neutral' | 'brand' | 'success' | 'warning' | 'error' | 'info';

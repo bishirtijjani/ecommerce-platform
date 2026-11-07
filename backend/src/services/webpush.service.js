@@ -19,7 +19,7 @@ let _configured = false;
 if (config.VAPID_PUBLIC_KEY && config.VAPID_PRIVATE_KEY) {
   try {
     webpush.setVapidDetails(
-      config.VAPID_SUBJECT || 'mailto:hello@mysooq.ng',
+      config.VAPID_SUBJECT || 'mailto:hello@marketplace.ng',
       config.VAPID_PUBLIC_KEY,
       config.VAPID_PRIVATE_KEY,
     );

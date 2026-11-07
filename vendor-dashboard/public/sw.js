@@ -1,6 +1,6 @@
-/* MySooq Vendor PWA service worker: push notifications + click-through. */
+/* Marketplace Vendor PWA service worker: push notifications + click-through. */
 
-const CACHE = "mysooq-vendor-shell-v1";
+const CACHE = "marketplace-vendor-shell-v1";
 
 self.addEventListener("install", () => self.skipWaiting());
 
@@ -16,7 +16,7 @@ self.addEventListener("push", (event) => {
   try {
     payload = event.data ? event.data.json() : {};
   } catch (_) {
-    payload = { title: "MySooq Vendor", body: event.data ? event.data.text() : "" };
+    payload = { title: "Marketplace Vendor", body: event.data ? event.data.text() : "" };
   }
   const data = payload.data || {};
   const options = {
@@ -26,7 +26,7 @@ self.addEventListener("push", (event) => {
     data,
     tag: data.notificationId || undefined,
   };
-  event.waitUntil(self.registration.showNotification(payload.title || "MySooq Vendor", options));
+  event.waitUntil(self.registration.showNotification(payload.title || "Marketplace Vendor", options));
 });
 
 // Map backend notification routes onto this SPA's real routes. Background

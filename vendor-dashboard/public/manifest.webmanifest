@@ -1,7 +1,7 @@
 {
-  "name": "MySooq Vendor",
+  "name": "Marketplace Vendor",
   "short_name": "Sooq Vendor",
-  "description": "Manage orders, catalogue and your storefront on MySooq.",
+  "description": "Manage orders, catalogue and your storefront on Marketplace.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

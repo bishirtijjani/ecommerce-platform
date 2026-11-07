@@ -1,7 +1,7 @@
 {
   "name": "ecommerce-backend",
   "version": "1.0.0",
-  "description": "Backend API for MySooq - a multi-vendor marketplace",
+  "description": "Backend API for Marketplace - a multi-vendor marketplace",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",

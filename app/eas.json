@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_API_URL": "https://api.marketplace.ng",
         "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "development"
       }
     },
@@ -18,7 +18,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_API_URL": "https://api.marketplace.ng",
         "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "staging"
       }
     },
@@ -31,7 +31,7 @@
         "buildConfiguration": "Release"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.mysooq.ng",
+        "EXPO_PUBLIC_API_URL": "https://api.marketplace.ng",
         "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "production"
       }
     }
@@ -39,7 +39,7 @@
   "submit": {
     "production": {
       "android": {
-        "serviceAccountKeyPath": "./mysooq-service-account.json",
+        "serviceAccountKeyPath": "./marketplace-service-account.json",
         "track": "alpha",
         "releaseStatus": "draft"
       },

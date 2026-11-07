@@ -1,4 +1,4 @@
-# Console fill sheet - MySooq customer app
+# Console fill sheet - Marketplace customer app
 
 Everything you type into **App Store Connect** and **Google Play Console**, in
 the order the consoles ask, with the value to paste. Copy from here.
@@ -19,7 +19,7 @@ Values that are **yours to supply** are marked `TODO:`.
 `All apps → Create app`
 | Field | Value |
 |---|---|
-| App name | `MySooq` |
+| App name | `Marketplace` |
 | Default language | `English (United States)` |
 | App or game | `App` |
 | Free or paid | `Free` |
@@ -30,10 +30,10 @@ Values that are **yours to supply** are marked `TODO:`.
 | Field | Value |
 |---|---|
 | Platform | `iOS` |
-| Name | `MySooq` |
+| Name | `Marketplace` |
 | Primary language | `English (U.S.)` |
-| Bundle ID | `ng.mysooq.customer` (must match `app.json`) |
-| SKU | `NGMYSOOQCUSTOMER01` (internal only, can't be changed) |
+| Bundle ID | `ng.marketplace.customer` (must match `app.json`) |
+| SKU | `NGMARKETPLACECUSTOMER01` (internal only, can't be changed) |
 | User Access | `Full Access` |
 
 ---
@@ -45,15 +45,15 @@ Values that are **yours to supply** are marked `TODO:`.
 |---|---|
 | App category | `Shopping` |
 | Tags | `Local`, `Lifestyle` |
-| Contact email | `support@mysooq.ng` |
+| Contact email | `support@marketplace.ng` |
 | Contact phone | `+2349068149540` |
-| Website | `https://mysooq.ng` |
+| Website | `https://marketplace.ng` |
 | Countries/regions | `Nigeria` (add more later) |
 
 ### 1.2 Main store listing
 | Field | Limit | Value |
 |---|---|---|
-| App name | 30 | `MySooq - Buy & Sell` *(19)* |
+| App name | 30 | `Marketplace - Buy & Sell` *(19)* |
 | Short description | 80 | `Shop local vendors, chat, and ask for what you can't find - all in one app.` |
 | Full description | 4000 | *(the EN full description in `listing-customer-app.md`)* |
 | App icon | 512×512 PNG | `store-assets/customer/icon-512.png` |
@@ -65,7 +65,7 @@ Values that are **yours to supply** are marked `TODO:`.
 ### 1.3 App content (the left-hand list - do all of these)
 | Section | Answer |
 |---|---|
-| **Privacy policy** | `https://mysooq.ng/legal/privacy` |
+| **Privacy policy** | `https://marketplace.ng/legal/privacy` |
 | **App access** | *"All or some functionality is restricted"* → **Add instructions** → paste the §4 block (demo buyer login) |
 | **Ads** | `No, my app does not contain ads` |
 | **Content rating** | Start questionnaire → category `Utility, Productivity, Communication, or Other` → see §1.4 |
@@ -76,7 +76,7 @@ Values that are **yours to supply** are marked `TODO:`.
 | **Financial features** | `No` *(no wallet, payments or lending in the customer app)* |
 | **Health apps** | `No` |
 | **COVID-19 contact tracing** | `No` |
-| **Data deletion** | `https://mysooq.ng/legal/account-deletion` + DPO email |
+| **Data deletion** | `https://marketplace.ng/legal/account-deletion` + DPO email |
 
 ### 1.4 Content rating questionnaire (IARC)
 Category: `Utility, Productivity, Communication, or Other`
@@ -113,7 +113,7 @@ Final rating: **Teen / PEGI 12**.
 ### 2.1 App Information
 | Field | Value |
 |---|---|
-| Name | `MySooq` |
+| Name | `Marketplace` |
 | Subtitle | `Buy & sell from local vendors` *(29)* |
 | Primary category | `Shopping` |
 | Secondary category | `Lifestyle` |
@@ -133,11 +133,11 @@ Final rating: **Teen / PEGI 12**.
 | Promotional text | 170 | *(the EN promotional text in `listing-customer-app.md`)* |
 | Description | 4000 | *(the EN full description)* |
 | Keywords | 100 | `marketplace,shop,buy,sell,vendor,local,souq,second hand,wholesale,Nigeria,request,bazaar` |
-| Support URL | - | `https://mysooq.ng/support` (TODO: confirm it resolves) |
-| Marketing URL | - | `https://mysooq.ng` *(optional)* |
-| Privacy Policy URL | - | `https://mysooq.ng/legal/privacy` |
+| Support URL | - | `https://marketplace.ng/support` (TODO: confirm it resolves) |
+| Marketing URL | - | `https://marketplace.ng` *(optional)* |
+| Privacy Policy URL | - | `https://marketplace.ng/legal/privacy` |
 | Version | - | `1.0.0` |
-| Copyright | - | `2026 MySooq` |
+| Copyright | - | `2026 Marketplace` |
 | What's New | - | `First release. Browse local vendors, chat with sellers, and post a request for anything you can't find.` |
 | Screenshots iPhone (required) | 3–10 | `appstore-customer-iphone-*` |
 | Screenshots 13" iPad | 3–10 | `appstore-customer-ipad-*` |
@@ -177,7 +177,7 @@ so ASC will stop asking.
 | Demo account | TODO: seeded buyer phone/email + password (see §4) |
 | Contact first/last name | TODO: |
 | Contact phone | `+2349068149540` |
-| Contact email | `support@mysooq.ng` |
+| Contact email | `support@marketplace.ng` |
 | Notes | paste the §4 block as-is |
 
 ---
@@ -209,7 +209,7 @@ Seed a demo buyer against PROD first, then paste this into **both** stores
 (fill the credentials).
 
 ```
-MySooq is a local marketplace (Nigeria). Buyers browse vendors and products,
+Marketplace is a local marketplace (Nigeria). Buyers browse vendors and products,
 chat with sellers (real-time), save items to a wishlist, and can post a
 "request" describing something they can't find, then receive and accept offers
 from sellers.
@@ -219,11 +219,11 @@ order is recorded by the vendor. Browsing and search are public; signing in is
 required only for chats, orders, requests and account.
 
 Sign in with this approved demo buyer:
-  Email:    TODO (e.g. buyer.review@mysooq.ng)
+  Email:    TODO (e.g. buyer.review@marketplace.ng)
   Password: TODO
 
 The demo account ships with a chat thread, saved items, one request with
-offers, and order history. Questions: support@mysooq.ng
+offers, and order history. Questions: support@marketplace.ng
 ```
 
 ---
@@ -246,10 +246,10 @@ All fields are within their limits - paste as-is.
 
 - [ ] App records created (§0)
 - [ ] Demo buyer seeded to PROD, creds pasted into §4 in both stores
-- [ ] `https://mysooq.ng/legal/privacy`, `/legal/terms`, `/legal/account-deletion` all resolve
+- [ ] `https://marketplace.ng/legal/privacy`, `/legal/terms`, `/legal/account-deletion` all resolve
 - [ ] Support URL + contact email/phone decided
 - [ ] Company legal name + copyright line decided
 - [ ] `ios.config.usesNonExemptEncryption: false` in `app.json` (done)
 - [ ] `REPLACE_WITH_APPLE_TEAM_ID` + `REPLACE_WITH_APP_STORE_CONNECT_APP_ID` filled in `app/eas.json`
-- [ ] `app/mysooq-service-account.json` present (gitignored) for Android submit
+- [ ] `app/marketplace-service-account.json` present (gitignored) for Android submit
 - [ ] Builds uploaded: `.aab` → Play internal, `.ipa` → TestFlight

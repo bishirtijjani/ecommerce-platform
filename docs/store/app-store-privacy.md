@@ -2,9 +2,9 @@
 
 Answers derived from the actual data model (`backend/prisma/schema.prisma`)
 and the customer app (`app/src`). Use these to fill App Store Connect →
-App Privacy when submitting the MySooq customer app.
+App Privacy when submitting the Marketplace customer app.
 
-Scope: the **customer app only** (`ng.mysooq.customer`).
+Scope: the **customer app only** (`ng.marketplace.customer`).
 
 ---
 
@@ -66,7 +66,7 @@ This means **no AppTrackingTransparency prompt is required**.
 ## Privacy Policy URL
 
 ```
-https://mysooq.ng/legal/privacy
+https://marketplace.ng/legal/privacy
 ```
 
 (The legal pages are bundled at `app/public/legal/` and must resolve at
@@ -89,7 +89,7 @@ Every "Yes" row above maps to at least one:
 
 ## Third-party processors (for the privacy-policy parity statement)
 
-The customer app sends limited data to processors that only act on MySooq's
+The customer app sends limited data to processors that only act on Marketplace's
 instructions:
 
 | Processor | Data | Purpose |

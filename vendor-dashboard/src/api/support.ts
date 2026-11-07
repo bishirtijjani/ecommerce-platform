@@ -9,7 +9,7 @@ const idemKey = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
  *
  * These hit the shared, role-agnostic `/support/tickets` endpoints (any
  * authenticated user - customer or vendor - owns their own tickets). Replies
- * from the MySooq team land in the same thread, so this is the vendor's
+ * from the Marketplace team land in the same thread, so this is the vendor's
  * built-in channel to the platform owners.
  */
 

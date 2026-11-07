@@ -4,7 +4,7 @@
     "_note": "All translations are a working draft. Every key needs review by a native Hausa speaker before launch. Track progress in mobile/customer-app/src/i18n/HAUSA_REVIEW.md."
   },
   "common": {
-    "appName": "MySooq",
+    "appName": "Marketplace",
     "ok": "To",
     "cancel": "Soke",
     "save": "Ajiye",
@@ -152,9 +152,9 @@
     "sell": "Sayar"
   },
   "shop": {
-    "heroTitle": "Sayar a MySooq",
+    "heroTitle": "Sayar a Marketplace",
     "heroSub": "Buɗe shagonku ka isa ga abokan ciniki na kusa.",
-    "signInTitle": "Shiga don sayarwa a MySooq",
+    "signInTitle": "Shiga don sayarwa a Marketplace",
     "howTitle": "Yadda yake aiki",
     "step1": "Ƙirƙiri shagonku",
     "step2": "Ƙara kayanku",
@@ -229,7 +229,7 @@
       "legal": "Doka",
       "legalSub": "Sharuɗɗa, manufar sirri",
       "openShop": "Buɗe shagonku",
-      "openShopSub": "Sayar da kayanku a MySooq",
+      "openShopSub": "Sayar da kayanku a Marketplace",
       "yourShop": "Shagonku",
       "yourShopPending": "Ana jiran amincewa",
       "yourShopActive": "Sarrafa shagonku",
@@ -366,7 +366,7 @@
     "chatLabel": "Taɗi kai tsaye",
     "chatSub": "Yi taɗi da masu tallafi",
     "emailLabel": "Imel na tallafi",
-    "emailValue": "support@mysooq.ng"
+    "emailValue": "support@marketplace.ng"
   },
   "errors": {
     "title": "An samu matsala",

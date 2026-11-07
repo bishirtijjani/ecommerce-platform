@@ -6,7 +6,7 @@ export const LogoMark = ({ size = 32, className }: { size?: number; className?: 
     src={logoUrl}
     width={size}
     height={size}
-    alt="MySooq"
+    alt="Marketplace"
     className={cn('shrink-0 object-contain', className)}
   />
 );
@@ -16,7 +16,7 @@ export const Logo = ({ size = 32, wordmark = true, className }: { size?: number;
     <LogoMark size={size} />
     {wordmark && (
       <span style={{ fontSize: size * 0.5 }} className="font-bold tracking-tight text-text-primary">
-        MySooq
+        Marketplace
         <span className="ml-1.5 align-middle text-[0.6em] font-semibold uppercase tracking-wide text-text-muted">Admin</span>
       </span>
     )}

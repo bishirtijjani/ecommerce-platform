@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MySooq",
-    "slug": "mysooq-customer",
-    "scheme": "mysooq",
+    "name": "Marketplace",
+    "slug": "marketplace-customer",
+    "scheme": "marketplace",
     "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,14 +14,14 @@
       "backgroundColor": "#0B3D24"
     },
     "ios": {
-      "bundleIdentifier": "ng.mysooq.app",
+      "bundleIdentifier": "ng.marketplace.app",
       "buildNumber": "1",
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "MySooq uses your location to show you listings, shops and vendors near you.",
-        "NSCameraUsageDescription": "MySooq uses the camera so you can take photos for your profile, product listings, chats and support requests.",
-        "NSPhotoLibraryUsageDescription": "MySooq needs photo access so you can add photos to listings, chats and support requests, and set your profile photo.",
-        "NSPhotoLibraryAddUsageDescription": "MySooq saves images to your gallery when you tap save.",
+        "NSLocationWhenInUseUsageDescription": "Marketplace uses your location to show you listings, shops and vendors near you.",
+        "NSCameraUsageDescription": "Marketplace uses the camera so you can take photos for your profile, product listings, chats and support requests.",
+        "NSPhotoLibraryUsageDescription": "Marketplace needs photo access so you can add photos to listings, chats and support requests, and set your profile photo.",
+        "NSPhotoLibraryAddUsageDescription": "Marketplace saves images to your gallery when you tap save.",
         "NSFaceIDUsageDescription": "Use Face ID to unlock the app.",
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -35,7 +35,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundImage": "./assets/adaptive-icon-bg.png"
       },
-      "package": "ng.mysooq.app",
+      "package": "ng.marketplace.app",
       "googleServicesFile": "./google-services.json",
       "versionCode": 1,
       "edgeToEdgeEnabled": true,
@@ -65,14 +65,14 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "MySooq uses your location to show you listings, shops and vendors near you."
+          "locationWhenInUsePermission": "Marketplace uses your location to show you listings, shops and vendors near you."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "MySooq needs photo access so you can add photos to listings, chats and support requests, and set your profile photo.",
-          "cameraPermission": "MySooq uses the camera so you can take photos for your profile, product listings, chats and support requests."
+          "photosPermission": "Marketplace needs photo access so you can add photos to listings, chats and support requests, and set your profile photo.",
+          "cameraPermission": "Marketplace uses the camera so you can take photos for your profile, product listings, chats and support requests."
         }
       ],
       "expo-localization",

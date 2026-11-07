@@ -92,7 +92,7 @@ import RequestDetailScreen from "../screens/main/RequestDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
-// react-navigation deep-link config - pairs with the `mysooq` scheme in app.json.
+// react-navigation deep-link config - pairs with the `marketplace` scheme in app.json.
 // The route paths mirror the conventions in services/notify.service.js so the
 // server can produce a `data.route` like "/request/abc" and either:
 //   - in-app: notificationRoute.routeToScreen handles dispatch via navigation.navigate
@@ -103,11 +103,11 @@ const Stack = createNativeStackNavigator();
 // the same screen names. Profile and Orders are top-level stack screens, not
 // tabs (the Orders slot is "Sell" now).
 //
-// Note on scheme: `mysooq://` is this app's own custom scheme, registered on
+// Note on scheme: `marketplace://` is this app's own custom scheme, registered on
 // device at install time. The universal-link domains are
-// ecommerce-customer.codeket.com (legacy) and customer.mysooq.ng (canonical).
+//  (legacy) and customer.marketplace.ng (canonical).
 const NAV_LINKING = {
-  prefixes: ["mysooq://", "https://ecommerce-customer.codeket.com", "https://customer.mysooq.ng"],
+  prefixes: ["marketplace://", "https://", "https://customer.marketplace.ng"],
   config: {
     screens: {
       MainTabs: {
@@ -306,7 +306,7 @@ export default function AppNavigator() {
         return;
       }
       setBioGate("required");
-      const ok = await authenticateWithBiometric("Unlock MySooq");
+      const ok = await authenticateWithBiometric("Unlock Marketplace");
       if (cancelled) return;
       setBioGate(ok ? "passed" : "required");
     })();
@@ -316,7 +316,7 @@ export default function AppNavigator() {
   }, [isHydrating, isAuthenticated]);
 
   const retryBiometric = async () => {
-    const ok = await authenticateWithBiometric("Unlock MySooq");
+    const ok = await authenticateWithBiometric("Unlock Marketplace");
     if (ok) setBioGate("passed");
   };
 

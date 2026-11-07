@@ -278,10 +278,10 @@
   },
   "support": {
     "title": "Taimako & tallafi",
-    "subtitle": "Tambayoyi, matsalar asusu ko wani abu - aika wa ƙungiyar MySooq.",
+    "subtitle": "Tambayoyi, matsalar asusu ko wani abu - aika wa ƙungiyar Marketplace.",
     "newTicket": "Sabon tikit",
     "preferContact": "Ka fi son imel ko kira?",
-    "preferContactSub": "Tuntuɓi ƙungiyar MySooq kai tsaye a lokutan aiki.",
+    "preferContactSub": "Tuntuɓi ƙungiyar Marketplace kai tsaye a lokutan aiki.",
     "yourTickets": "Tikit ɗinku",
     "noTickets": "Babu tikit tukuna",
     "noTicketsSub": "Fara tikit kuma ƙungiyarmu za ta taimake ka.",
@@ -310,7 +310,7 @@
     "closedNotice": "An rufe wannan tikit. Buɗe sabo idan kana buƙatar ƙarin taimako.",
     "attachment": "(haɗe)",
     "you": "Kai",
-    "supportTeam": "Tallafin MySooq",
+    "supportTeam": "Tallafin Marketplace",
     "ticket": "Tikit",
     "uploadFailed": "An kasa loda. Sake gwadawa.",
     "couldntLoad": "An kasa loda wannan tikit",
@@ -388,7 +388,7 @@
     "customer": {
       "change": "Canza",
       "searchPlaceholder": "Nemo da lambar waya",
-      "noAccount": "Babu asusun MySooq da wannan lambar. Ka gaya wa abokin ciniki ya fara buɗe asusu."
+      "noAccount": "Babu asusun Marketplace da wannan lambar. Ka gaya wa abokin ciniki ya fara buɗe asusu."
     },
     "address": {
       "title": "Adireshin bayarwa",

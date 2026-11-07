@@ -87,14 +87,14 @@ if (!html.includes("serviceWorker.register('/sw.js'")) {
 
 // 3. First-paint splash. The web bundle takes a moment to boot, and until
 // React mounted the PWA sat on a blank white page. This paints the brand
-// splash (brand green, logo, white "MySooq" lettermark below it) immediately;
+// splash (brand green, logo, white "Marketplace" lettermark below it) immediately;
 // AppSplash removes the div the instant the live overlay covers it, so the
 // swap is invisible. The timeout is a safety hatch: a bundle that never boots
 // must not leave someone stuck on a green screen.
 const splashHtml = `
     <div id="web-splash" style="position:fixed;inset:0;z-index:2147483647;background:#0B3D24;display:flex;flex-direction:column;align-items:center;justify-content:center;">
       <img src="/splash-icon.png" alt="" width="108" height="108" style="display:block;margin-bottom:18px;" />
-      <div style="color:#FFFFFF;font-size:27px;font-weight:900;letter-spacing:-0.4px;">MySooq</div>
+      <div style="color:#FFFFFF;font-size:27px;font-weight:900;letter-spacing:-0.4px;">Marketplace</div>
     </div>
     <script>
       setTimeout(function () {

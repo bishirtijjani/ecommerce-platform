@@ -86,7 +86,7 @@ export default function Login() {
               value={email}
               onChange={(e) => { setEmail(e.target.value); setTouched((t) => ({ ...t, email: true })); }}
               onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-              placeholder="admin@mysooq.com"
+              placeholder="admin@marketplace.com"
               error={fieldErrors.email}
             />
             <Input
@@ -116,7 +116,7 @@ export default function Login() {
             </Button>
           </form>
         </div>
-        <p className="mt-6 text-center text-xs text-text-placeholder">MySooq Admin · Secure access only</p>
+        <p className="mt-6 text-center text-xs text-text-placeholder">Marketplace Admin · Secure access only</p>
       </div>
     </div>
   );

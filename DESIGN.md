@@ -1,8 +1,8 @@
-# Design System — MySooq
+# Design System — Marketplace
 
 ## 1. Brand
 
-- **Name**: "MySooq" (Arabic for "my marketplace/bazaar") — confirmed platform name.
+- **Name**: "Marketplace" (Arabic for "my marketplace/bazaar") — confirmed platform name.
 - **Positioning**: the marketplace/discovery layer itself is the product's identity — not payments, not delivery. Design should read as "a market you browse."
 - **Audience**: Nigerian local-commerce vendors across any category — clothing/textile, vehicles, real estate, electronics, groceries, food, beauty, services, and more — and their customers, primarily mobile-first, variable bandwidth/device tier. Do not assume desktop-first or high-end-device interaction patterns, and do not assume a food-delivery-only vendor mix.
 
@@ -39,7 +39,7 @@ Dark mode: `clay-900` base, `clay-700` raised surfaces/borders, `limewash-100` t
 **Construction logic**: an abstract threshold/archway silhouette built from stacked geometric relief units (triangles and lozenges, echoing Hausa mud-brick facade motifs), reading simultaneously as (a) a market stall entrance and (b) the letter "M." Two raised diamond units sit atop a wider triangular base, separated by a thin negative-space gap that doubles as a doorway.
 
 - Must work as a single-color mark (favicons/app icons down to 16px).
-- Wordmark pairs the mark with "MySooq" in the display face (§4), sentence case.
+- Wordmark pairs the mark with "Marketplace" in the display face (§4), sentence case.
 
 A first-pass execution exists at `brand/logo-mark.svg` (icon) and `brand/logo-lockup.svg` (mark + wordmark), tokens in `brand/tokens.json`. Not yet visually verified by a human — check both in a browser before use.
 

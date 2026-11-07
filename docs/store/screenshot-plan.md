@@ -3,7 +3,7 @@
 Both stores require screenshots in specific dimensions. This file is the
 script for producing them - what to shoot, at which size, in which order.
 
-MySooq marketing frames are generated at exact pixel sizes by
+Marketplace marketing frames are generated at exact pixel sizes by
 `store-assets/generator/render.mjs` (see its README) rather than captured from
 a simulator, so they are reproducible from HTML/CSS. The capture-from-simulator
 notes are kept for reference / for real product shots.
@@ -43,7 +43,7 @@ The order matters more than any single frame. Build a 7-frame arc.
 | 4 | **chat** | Buyer ↔ vendor chat thread with product context chip, typing/read receipts, attachments | The defining marketplace UX - chat commerce |
 | 5 | **request** | "Ask sellers" request composer: description, photos, reach (nearby/anywhere), budget, urgency, map | The differentiator - post what you need, sellers respond |
 | 6 | **storefront** | Verified vendor storefront: cover, verified badge, products, reviews, policies | Trust + proof that real shops live on the platform |
-| 7 | **sell** | "Sell on MySooq": open your shop / manage dashboard, the 3-step how-it-works | Recruits sellers; closes the two-sided loop |
+| 7 | **sell** | "Sell on Marketplace": open your shop / manage dashboard, the 3-step how-it-works | Recruits sellers; closes the two-sided loop |
 
 ---
 
@@ -78,7 +78,7 @@ Keep them short - 4-7 words.
    solid brand band (forest green `#0B3D24`). Keep the bottom ~85% as the
    unaltered phone capture.
 5. **Feature graphic** (Play only): 1024 × 500, brand-green background, the
-   MySooq lockup + tagline. Avoid embedding tiny screenshots.
+   Marketplace lockup + tagline. Avoid embedding tiny screenshots.
 
 > The frames in `store-assets/generator/templates/screens/` render the
 > marketing versions of each of these at every required size - the same

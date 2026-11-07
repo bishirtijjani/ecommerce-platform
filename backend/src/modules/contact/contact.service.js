@@ -41,7 +41,7 @@ const submitContactMessage = async (input) => {
     return { delivered: true };
   } catch (err) {
     logger.error('Contact form delivery failed', { err: err.message, email: input.email });
-    throw AppError.serviceUnavailable("We couldn't send your message right now. Please email hello@mysooq.ng instead.");
+    throw AppError.serviceUnavailable("We couldn't send your message right now. Please email hello@marketplace.ng instead.");
   }
 };
 

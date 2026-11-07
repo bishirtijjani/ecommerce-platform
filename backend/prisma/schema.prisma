@@ -2,7 +2,7 @@
 // ECOMMERCE MARKETPLACE - PRISMA SCHEMA
 // Single Source of Truth for all data models
 //
-// Forked from the vtu-logistics ("MYSOOQ") schema. That app bundled a
+// Forked from the vtu-logistics ("MARKETPLACE") schema. That app bundled a
 // multi-vendor marketplace (Vendor/Product/ProductVariant/OptionGroup) on
 // top of a delivery backbone (Request/Rider/PackageDetail/VTU). This schema
 // keeps the marketplace half, drops the delivery/rider/VTU half, and

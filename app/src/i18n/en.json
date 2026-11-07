@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "MySooq",
+    "appName": "Marketplace",
     "ok": "OK",
     "cancel": "Cancel",
     "save": "Save",
@@ -148,9 +148,9 @@
     "sell": "Sell"
   },
   "shop": {
-    "heroTitle": "Sell on MySooq",
+    "heroTitle": "Sell on Marketplace",
     "heroSub": "Open your own shop and reach customers near you.",
-    "signInTitle": "Sign in to sell on MySooq",
+    "signInTitle": "Sign in to sell on Marketplace",
     "howTitle": "How it works",
     "step1": "Create your shop",
     "step2": "Add your products",
@@ -212,7 +212,7 @@
       "legal": "Legal",
       "legalSub": "Terms, privacy policy",
       "openShop": "Open your own shop",
-      "openShopSub": "Sell your products on MySooq",
+      "openShopSub": "Sell your products on Marketplace",
       "yourShop": "Your shop",
       "yourShopPending": "Waiting for approval",
       "yourShopActive": "Manage your shop",
@@ -341,7 +341,7 @@
     "chatLabel": "Live Chat",
     "chatSub": "Chat with our support team",
     "emailLabel": "Email Support",
-    "emailValue": "support@mysooq.ng"
+    "emailValue": "support@marketplace.ng"
   },
   "errors": {
     "title": "Something went wrong",

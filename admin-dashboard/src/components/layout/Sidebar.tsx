@@ -90,7 +90,7 @@ export const Sidebar = () => {
           ))}
         </nav>
         <div className="border-t border-border p-4">
-          <p className="text-xs text-text-placeholder">MySooq Admin · v1.0</p>
+          <p className="text-xs text-text-placeholder">Marketplace Admin · v1.0</p>
         </div>
       </div>
     </aside>

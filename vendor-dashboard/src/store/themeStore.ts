@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 type Mode = 'light' | 'dark' | 'system';
-const KEY = 'mysooq_vendor_theme';
+const KEY = 'marketplace_vendor_theme';
 
 const systemPrefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 

@@ -42,7 +42,7 @@ yarn-error.*
 /android
 
 # service account keys (never commit)
-mysooq-service-account.json
+marketplace-service-account.json
 *firebase-adminsdk*.json
 
-iprime-498118-faae7e3aae7d.json
+logistics-service-account.json

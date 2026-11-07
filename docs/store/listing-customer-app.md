@@ -1,4 +1,4 @@
-# Store listing - MySooq (customer app)
+# Store listing - Marketplace (customer app)
 
 Copy for the App Store + Google Play submission. Each store has slightly
 different field lengths and conventions; this file covers both.
@@ -8,7 +8,7 @@ English only.
 ## English
 
 ### App name (≤ 30 chars on both stores)
-`MySooq - Buy & Sell`  *(19 chars)*
+`Marketplace - Buy & Sell`  *(19 chars)*
 
 ### Subtitle (App Store only, ≤ 30 chars)
 `Buy & sell from local vendors`  *(29 chars)*
@@ -24,7 +24,7 @@ English only.
 
 ### Full description
 
-> MySooq is the local marketplace that connects you with real vendors near
+> Marketplace is the local marketplace that connects you with real vendors near
 > you - clothes, phones, vehicles, home items, beauty, groceries, second-hand
 > deals and more. Browse, compare, and talk to sellers directly. One app.
 
@@ -48,7 +48,7 @@ English only.
 - Accept the best offer and message the seller straight away
 
 **Turn your shop into a business**
-- Open your own shop and list your products on MySooq
+- Open your own shop and list your products on Marketplace
 - Manage your catalogue, orders and storefront from the seller dashboard
 - Reach buyers looking for exactly what you sell - including bulk/wholesale
 
@@ -58,8 +58,8 @@ English only.
 - Works on slow networks; skeleton loaders, not spinners
 - In-app support and a clear dispute process if something goes wrong
 
-MySooq is a marketplace. It connects buyers with independent vendors; vendors
-are separate businesses, not agents of MySooq.
+Marketplace is a marketplace. It connects buyers with independent vendors; vendors
+are separate businesses, not agents of Marketplace.
 
 **Permissions we ask for, and why**
 - Location: to show listings, shops and vendors near you
@@ -68,7 +68,7 @@ are separate businesses, not agents of MySooq.
 - Notifications: order updates, seller replies and messages
 
 **Need help?** Tap *Account → Help & Support* in the app, or email
-support@mysooq.ng.
+support@marketplace.ng.
 
 ---
 

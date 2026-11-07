@@ -55,7 +55,7 @@ export default function Register() {
   });
 
   return (
-    <AuthLayout title="Register your business" subtitle="Set up your shop on MySooq in a couple of minutes." wide>
+    <AuthLayout title="Register your business" subtitle="Set up your shop on Marketplace in a couple of minutes." wide>
       <form
         className="space-y-5"
         onSubmit={(e) => {

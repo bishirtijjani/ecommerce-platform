@@ -35,14 +35,14 @@ export const isWebPushSupported = () =>
 
 const REASONS = {
   auto: {
-    title: 'Never miss a thing on MySooq',
+    title: 'Never miss a thing on Marketplace',
     message:
       "Turn on notifications and we'll tell you the moment a seller replies to your request, your order status changes, or you get a new message. You can switch this off any time.",
   },
   notifications: {
     title: 'Get updates without checking',
     message:
-      "Enable notifications and new order updates, seller replies and messages will pop up the second they happen - even when MySooq isn't open. You can switch this off any time.",
+      "Enable notifications and new order updates, seller replies and messages will pop up the second they happen - even when Marketplace isn't open. You can switch this off any time.",
   },
   request: {
     title: 'Get replies faster',
@@ -144,8 +144,8 @@ export async function ensurePushPermission(context = 'auto') {
         if (!(await Store.getItemAsync(UNSUPPORTED_TIP_KEY))) {
           await Store.setItemAsync(UNSUPPORTED_TIP_KEY, '1');
           showAlert(
-            'Add MySooq to your Home Screen',
-            'On this device, notifications only work once MySooq is installed. Tap the Share button, choose "Add to Home Screen", then open it from there and enable notifications.',
+            'Add Marketplace to your Home Screen',
+            'On this device, notifications only work once Marketplace is installed. Tap the Share button, choose "Add to Home Screen", then open it from there and enable notifications.',
             [{ text: 'Got it' }],
           );
         }

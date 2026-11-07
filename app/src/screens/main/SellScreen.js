@@ -1,5 +1,5 @@
 /**
- * SellScreen - the "Sell on MySooq" tab.
+ * SellScreen - the "Sell on Marketplace" tab.
  *
  * Replaces the old Orders tab (customers rarely track orders in this
  * chat-commerce app). It is the visible, one-tap way for a customer to open

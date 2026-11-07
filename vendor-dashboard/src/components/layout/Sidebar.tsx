@@ -64,7 +64,7 @@ export const Sidebar = () => {
         </nav>
         <div className="space-y-3 border-t border-border p-4">
           <LanguageSwitcher className="w-full justify-between" />
-          <p className="text-xs text-text-placeholder">MySooq Vendor · v1.0</p>
+          <p className="text-xs text-text-placeholder">Marketplace Vendor · v1.0</p>
         </div>
       </div>
     </aside>

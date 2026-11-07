@@ -2,7 +2,7 @@
  * AppSplash - the branded boot splash.
  *
  * A full-screen brand-green overlay (same colour + mark as the native splash
- * configured in app.json) with the "MySooq" lettermark in white BELOW the
+ * configured in app.json) with the "Marketplace" lettermark in white BELOW the
  * logo. It stays up for at least MIN_MS after the bundle starts executing -
  * on web that is page load, on native it is app launch - then fades out. A
  * slow boot simply extends it, so users never see a half-ready app flash by.
@@ -58,11 +58,11 @@ export default function AppSplash() {
       pointerEvents="none"
       accessible
       accessibilityRole="image"
-      accessibilityLabel="MySooq"
+      accessibilityLabel="Marketplace"
       style={[StyleSheet.absoluteFillObject, styles.root, { opacity }]}
     >
       <Image source={require("../../assets/splash-icon.png")} style={styles.logo} contentFit="contain" />
-      <Text style={styles.wordmark}>MySooq</Text>
+      <Text style={styles.wordmark}>Marketplace</Text>
     </Animated.View>
   );
 }

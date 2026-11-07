@@ -1,6 +1,6 @@
-# MySooq — Vendor Dashboard
+# Marketplace — Vendor Dashboard
 
-Web dashboard for MySooq vendors: manage orders, catalogue, storefront profile, and marketing. Built to close the chat-commerce loop — customers browse and contact vendors in the mobile app, and vendors run the business from here.
+Web dashboard for Marketplace vendors: manage orders, catalogue, storefront profile, and marketing. Built to close the chat-commerce loop — customers browse and contact vendors in the mobile app, and vendors run the business from here.
 
 ## Stack
 

@@ -8,7 +8,7 @@
  */
 import { api } from '../api/client';
 
-const SEEN_KEY = 'mysooq_admin_push_asked_v1';
+const SEEN_KEY = 'marketplace_admin_push_asked_v1';
 
 export const isWebPushSupported = () =>
   typeof window !== 'undefined' &&

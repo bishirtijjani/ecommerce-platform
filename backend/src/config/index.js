@@ -22,7 +22,7 @@ const envSchema = z
     APP_NAME: z.string().default("Ecommerce"),
     // Public vendor web app URL - used to build the auto-login button in
     // vendor emails (approval, unsuspension).
-    VENDOR_APP_URL: z.string().url().default("https://vendor.mysooq.ng"),
+    VENDOR_APP_URL: z.string().url().default("https://vendor.marketplace.ng"),
 
     // Database
     DATABASE_URL: z.string().url(),
@@ -50,7 +50,7 @@ const envSchema = z
     // VAPID_SUBJECT must be a mailto: or https: URL identifying the sender.
     VAPID_PUBLIC_KEY: z.string().optional().default(""),
     VAPID_PRIVATE_KEY: z.string().optional().default(""),
-    VAPID_SUBJECT: z.string().optional().default("mailto:hello@mysooq.ng"),
+    VAPID_SUBJECT: z.string().optional().default("mailto:hello@marketplace.ng"),
 
     // Cloudinary - required in production, optional in dev
     CLOUDINARY_CLOUD_NAME: isDev ? z.string().default("") : z.string().min(1),
@@ -80,7 +80,7 @@ const envSchema = z
     WHATSAPP_PHONE_NUMBER_ID: z.string().optional().default(""),
     WHATSAPP_BUSINESS_ACCOUNT_ID: z.string().optional().default(""),
     WHATSAPP_ACCESS_TOKEN: z.string().optional().default(""),
-    WHATSAPP_AUTH_TEMPLATE_NAME: z.string().default("mysooq_otp"),
+    WHATSAPP_AUTH_TEMPLATE_NAME: z.string().default("marketplace_otp"),
     WHATSAPP_AUTH_TEMPLATE_LANGUAGE: z.string().default("en_US"),
     // Webhook security - verify token is shown in Meta's UI during webhook
     // setup; app secret is used to validate X-Hub-Signature-256 on each event.
@@ -106,13 +106,13 @@ const envSchema = z
     SMTP_PORT: z.coerce.number().default(465),
     SMTP_USER: isDev ? z.string().optional().default("") : z.string().min(1),
     SMTP_PASS: isDev ? z.string().optional().default("") : z.string().min(1),
-    SMTP_FROM_NAME: z.string().default("MySooq.ng"),
+    SMTP_FROM_NAME: z.string().default("Marketplace.ng"),
     SMTP_FROM_EMAIL: isDev
       ? z.string().optional().default("")
       : z.string().email(),
     // Inbox that receives marketing-site contact-form submissions. Defaults
     // to the public support address; override to route to a shared inbox.
-    CONTACT_INBOX_EMAIL: z.string().email().default("hello@mysooq.ng"),
+    CONTACT_INBOX_EMAIL: z.string().email().default("hello@marketplace.ng"),
     // Operational alerts (e.g. a utility payment HELD for manual review because
     // the provider outcome was indeterminate). Empty → falls back to SMTP_FROM_EMAIL.
     ALERT_EMAIL: z.string().default(""),
@@ -132,7 +132,7 @@ const envSchema = z
     // and production it MUST be an explicit list; setting '*' there is a hard
     // misconfiguration (browsers don't even honor it with credentials).
     //
-    // Example: CORS_ALLOWED_ORIGINS=https://mysooq.ng,https://admin.mysooq.ng
+    // Example: CORS_ALLOWED_ORIGINS=https://marketplace.ng,https://admin.marketplace.ng
     CORS_ALLOWED_ORIGINS: isDev
       ? z.string().optional().default("*")
       : z.string().min(1, "CORS_ALLOWED_ORIGINS must be set in non-dev"),

@@ -288,10 +288,10 @@
   },
   "support": {
     "title": "Help & support",
-    "subtitle": "Questions, account issues or anything else - message the MySooq team.",
+    "subtitle": "Questions, account issues or anything else - message the Marketplace team.",
     "newTicket": "New ticket",
     "preferContact": "Prefer email or a call?",
-    "preferContactSub": "Reach the MySooq team directly during business hours.",
+    "preferContactSub": "Reach the Marketplace team directly during business hours.",
     "yourTickets": "Your tickets",
     "noTickets": "No tickets yet",
     "noTicketsSub": "Start a ticket and our team will help you out.",
@@ -320,7 +320,7 @@
     "closedNotice": "This ticket is closed. Open a new one if you need more help.",
     "attachment": "(attachment)",
     "you": "You",
-    "supportTeam": "MySooq Support",
+    "supportTeam": "Marketplace Support",
     "ticket": "Ticket",
     "uploadFailed": "Upload failed. Please try again.",
     "couldntLoad": "Couldn't load this ticket",
@@ -398,7 +398,7 @@
     "customer": {
       "change": "Change",
       "searchPlaceholder": "Search by phone number",
-      "noAccount": "No MySooq account with this number. Ask the customer to create an account first."
+      "noAccount": "No Marketplace account with this number. Ask the customer to create an account first."
     },
     "address": {
       "title": "Delivery address",

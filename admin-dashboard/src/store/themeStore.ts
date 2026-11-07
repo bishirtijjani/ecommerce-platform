@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 type Mode = 'light' | 'dark' | 'system';
-const KEY = 'mysooq_admin_theme';
+const KEY = 'marketplace_admin_theme';
 
 const isBrowser = typeof window !== 'undefined';
 

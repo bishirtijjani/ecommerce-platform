@@ -18,8 +18,8 @@ export interface ApiResponse<T> {
   meta?: PaginationMeta;
 }
 
-const ACCESS_KEY = 'mysooq_admin_access';
-const REFRESH_KEY = 'mysooq_admin_refresh';
+const ACCESS_KEY = 'marketplace_admin_access';
+const REFRESH_KEY = 'marketplace_admin_refresh';
 
 export const tokenStorage = {
   getAccess: () => localStorage.getItem(ACCESS_KEY),

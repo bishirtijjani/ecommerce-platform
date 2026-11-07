@@ -266,7 +266,7 @@ In `admin.service.js`, after each successful mutation call `pushAndSocket` to
 ### P1 — Fill coverage gaps
 
 - `auth.service.verifyOtp` (and first login): send a welcome notification
-  ("Welcome to MySooq…") with `data.route = /home`.
+  ("Welcome to Marketplace…") with `data.route = /home`.
 - `chatService.startConversation`: notify the vendor that a customer opened a
   chat (or rely on the first message; document the choice).
 - `vendorService` callback request: also notify the vendor in-app/push, not just

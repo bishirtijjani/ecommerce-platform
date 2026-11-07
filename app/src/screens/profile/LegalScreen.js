@@ -25,12 +25,12 @@ export default function LegalScreen({ navigation }) {
     {
       icon: "document-text-outline",
       label: t("legal.terms"),
-      url: "https://mysooq.ng/legal/terms",
+      url: "https://marketplace.ng/legal/terms",
     },
     {
       icon: "shield-outline",
       label: t("legal.privacy"),
-      url: "https://mysooq.ng/legal/privacy",
+      url: "https://marketplace.ng/legal/privacy",
     },
   ];
 

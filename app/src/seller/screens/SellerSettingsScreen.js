@@ -241,7 +241,7 @@ export default function SellerSettingsScreen() {
             <ListRow
               icon="headset-outline"
               title="Support"
-              subtitle="Open a ticket with the MySooq team"
+              subtitle="Open a ticket with the Marketplace team"
               onPress={() => navigation.navigate("SellerSupport")}
               right={<Ionicons name="chevron-forward" size={17} color={tokens.text.placeholder} />}
               last

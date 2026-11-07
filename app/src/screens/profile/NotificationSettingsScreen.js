@@ -356,9 +356,9 @@ export default function NotificationSettingsScreen({ navigation }) {
               <Text style={{ fontSize: 12, color: tokens.text.muted, lineHeight: 18 }}>
                 {Platform.OS === "web"
                   ? pushPermission === "default"
-                    ? "Tap Enable to allow notifications for MySooq. You can switch this off any time."
-                    : "Notifications are blocked for this site. Open your browser settings, allow notifications, then reopen MySooq."
-                  : "Enable MySooq notifications in system settings to get order, chat and request alerts."}
+                    ? "Tap Enable to allow notifications for Marketplace. You can switch this off any time."
+                    : "Notifications are blocked for this site. Open your browser settings, allow notifications, then reopen Marketplace."
+                  : "Enable Marketplace notifications in system settings to get order, chat and request alerts."}
               </Text>
               {(Platform.OS !== "web" || pushPermission === "default") && (
                 <TouchableOpacity

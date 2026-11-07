@@ -33,7 +33,7 @@ const SECTIONS = [
     title: "Account",
     items: [
       { label: "Settings", sub: "Shop status and notifications", icon: "settings-outline", screen: "SellerSettings" },
-      { label: "Support", sub: "Get help from MySooq", icon: "headset-outline", screen: "SellerSupport" },
+      { label: "Support", sub: "Get help from Marketplace", icon: "headset-outline", screen: "SellerSupport" },
     ],
   },
 ];

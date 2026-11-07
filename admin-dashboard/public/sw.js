@@ -1,6 +1,6 @@
-/* MySooq Admin PWA service worker: push notifications + click-through. */
+/* Marketplace Admin PWA service worker: push notifications + click-through. */
 
-const CACHE = "mysooq-admin-shell-v1";
+const CACHE = "marketplace-admin-shell-v1";
 
 self.addEventListener("install", () => self.skipWaiting());
 
@@ -16,7 +16,7 @@ self.addEventListener("push", (event) => {
   try {
     payload = event.data ? event.data.json() : {};
   } catch (_) {
-    payload = { title: "MySooq Admin", body: event.data ? event.data.text() : "" };
+    payload = { title: "Marketplace Admin", body: event.data ? event.data.text() : "" };
   }
   const data = payload.data || {};
   const options = {
@@ -26,7 +26,7 @@ self.addEventListener("push", (event) => {
     data,
     tag: data.notificationId || undefined,
   };
-  event.waitUntil(self.registration.showNotification(payload.title || "MySooq Admin", options));
+  event.waitUntil(self.registration.showNotification(payload.title || "Marketplace Admin", options));
 });
 
 // Map backend notification routes onto this SPA's real routes. Background

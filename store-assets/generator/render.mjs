@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * render.mjs - rasterize MySooq customer-app visual assets from the HTML/CSS
+ * render.mjs - rasterize Marketplace customer-app visual assets from the HTML/CSS
  * templates in this folder.
  *
  *   node store-assets/generator/render.mjs

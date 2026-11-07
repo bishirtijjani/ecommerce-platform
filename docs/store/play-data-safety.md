@@ -2,7 +2,7 @@
 
 Source-of-truth for Play Console → Data safety, derived from
 `backend/prisma/schema.prisma` and the processors in
-`app/src/services`. Scope: the **MySooq customer app** (`ng.mysooq.customer`).
+`app/src/services`. Scope: the **Marketplace customer app** (`ng.marketplace.customer`).
 
 ---
 
@@ -21,7 +21,7 @@ Source-of-truth for Play Console → Data safety, derived from
 Play groups data into **categories**. For each sub-type we declare:
 (a) collected, (b) shared, (c) optional or required, (d) purpose.
 
-For MySooq, **"shared"** means **transferred to a third party**, NOT "used by
+For Marketplace, **"shared"** means **transferred to a third party**, NOT "used by
 our service providers under a DPA". Per Play's definitions, processors
 (Cloudinary, Expo/FCM, Termii/WhatsApp, SMTP, Google Maps) count as
 data-processing partners, not data sharers, when they only process on our
@@ -116,7 +116,7 @@ behalf.
 **No data is "shared" in the Play Console sense.** The vendors we use
 (Cloudinary, Expo Push / Firebase Cloud Messaging, WhatsApp Cloud API /
 Termii, SMTP, Google Maps Platform) are data-processing partners
-contracted to process data only on MySooq's instructions for the stated
+contracted to process data only on Marketplace's instructions for the stated
 purposes. Per Google's definitions this is not "sharing" and must NOT be
 declared in the sharing column.
 
@@ -128,7 +128,7 @@ Canonical reference: Google's
 ## Section 5 - Privacy Policy URL
 
 ```
-https://mysooq.ng/legal/privacy
+https://marketplace.ng/legal/privacy
 ```
 
 (Must resolve at review time. Related: `/legal/terms`,

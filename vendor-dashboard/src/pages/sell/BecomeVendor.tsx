@@ -22,7 +22,7 @@ const PHONE_RE = /^0[789][01]\d{8}$/;
 // Signup draft: keep the account fields so a browser back / refresh from the OTP
 // step doesn't wipe everything the vendor just typed. Password is deliberately
 // NOT persisted.
-const DRAFT_KEY = 'mysooq_become_vendor_draft';
+const DRAFT_KEY = 'marketplace_become_vendor_draft';
 type Draft = Partial<{ firstName: string; lastName: string; email: string; phone: string }>;
 const readDraft = (): Draft => {
   try {

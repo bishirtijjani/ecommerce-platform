@@ -29,7 +29,7 @@ const FALLBACK_NOTIFICATION_TYPES = new Set([
   'ORDER',
   'ORDER_STATUS',
 ]);
-const PUBLIC_APP_URL = 'https://customer.mysooq.ng';
+const PUBLIC_APP_URL = 'https://customer.marketplace.ng';
 
 const sendEmailFallback = async (userId, user, { type, title, body, data }) => {
   if (!user?.email) return;
@@ -41,8 +41,8 @@ const sendEmailFallback = async (userId, user, { type, title, body, data }) => {
     await emailService.sendEmail({
       to: user.email,
       subject: title,
-      text: `${body}\n\nOpen MySooq: ${link}`,
-      html: `<p>${body}</p><p><a href="${link}">Open MySooq</a></p>`,
+      text: `${body}\n\nOpen Marketplace: ${link}`,
+      html: `<p>${body}</p><p><a href="${link}">Open Marketplace</a></p>`,
     });
     logger.info('Notification email fallback sent', { userId, type });
   } catch (err) {

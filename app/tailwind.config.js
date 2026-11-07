@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // MySooq brand tokens (see /DESIGN.md, /brand/tokens.json)
+        // Marketplace brand tokens (see /DESIGN.md, /brand/tokens.json)
         // Client override: no clay/limewash brown-beige - white surfaces, forest-green accent only.
         primary: '#0B3D24',    // Forest green - actionable accent
         secondary: '#201A16',  // Charcoal - headers, key elements

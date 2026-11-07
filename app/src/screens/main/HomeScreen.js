@@ -23,7 +23,7 @@ import { useTheme } from "../../theme";
 import { formatNaira } from "../../data/marketplace";
 
 // Customer app home/browse screen (vendor-marketplace direction), styled
-// with the MySooq brand tokens. Listings, shops and categories all come from
+// with the Marketplace brand tokens. Listings, shops and categories all come from
 // the real backend catalog (see store/slices/marketplaceSlice.js and
 // categoriesSlice.js). "See all" opens the marketplace-style browse screen
 // (CategoriesScreen), which any category tile deep-links into.

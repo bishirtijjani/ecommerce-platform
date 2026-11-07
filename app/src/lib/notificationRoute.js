@@ -185,7 +185,7 @@ export const routeToScreen = (n) => {
 };
 
 /**
- * Parse a deep-link URL like `mysooq://orders` into the same action shape.
+ * Parse a deep-link URL like `marketplace://orders` into the same action shape.
  * Returns null if the URL doesn't carry a known path. The scheme-agnostic
  * regex below means legacy `customerapp://…` URLs (pre-rename) still parse
  * correctly if a stale notification lands.
@@ -197,7 +197,7 @@ export const parseDeepLink = (url, audienceOverride) => {
     const audience = audienceOverride || audienceFromQuery;
 
     // Strip the scheme. For absolute web URLs also drop the host, but keep
-    // the path for custom schemes (`mysooq://requests/123` → `requests/123`).
+    // the path for custom schemes (`marketplace://requests/123` → `requests/123`).
     let path = url.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '');
     const firstSegment = path.split('/')[0];
     if (firstSegment.includes('.') || firstSegment.includes(':')) {

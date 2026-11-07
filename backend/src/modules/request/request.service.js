@@ -965,7 +965,7 @@ const adminRemove = async (requestId) => {
     .pushAndSocket(request.customerId, {
       type: 'SYSTEM',
       title: 'Request removed',
-      body: `MySooq support removed "${request.title}".`,
+      body: `Marketplace support removed "${request.title}".`,
       data: { route: '/requests', audience: 'customer' },
     })
     .catch((err) => logger.warn('Admin request-removal notify failed (non-fatal)', {
