@@ -2,7 +2,7 @@
 
 A mobile-first, multi-vendor commerce platform for local markets. Customers browse shops and products, chat with sellers and place orders, or post what they need and let sellers come to them. It ships as an **Expo app** (iOS, Android and installable web PWA), a **vendor dashboard**, an **admin dashboard** and a **Node.js backend**.
 
-**In production:** live on the App Store, Google Play and the web · 21 approved vendors · 350 products
+**Live on the iOS App Store, Google Play and the web.**
 
 ## Highlights
 - **Reverse marketplace ("I need X, sellers respond"):** a customer posts a request with photos, videos, quantity, budget range, deadline and urgency. The platform matches relevant sellers by trade and distance (nearby radius or anywhere, with keyword fallback when no category is chosen), pushes it to them, and sellers reply with a message and an optional price.
